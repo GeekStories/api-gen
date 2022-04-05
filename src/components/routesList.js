@@ -18,15 +18,17 @@ const StyledRoutesTitle = tw.h1`
 
 const StyledRoutesList = tw.ol`
   list-none
+  h-[24rem]
+  overflow-y-scroll
 `;
 
 const StyledRoutesListItem = tw.li`
   grid
-  grid-cols-5
+  grid-cols-6
+  text-center
   my-2
   text-lg
   font-mono
-  text-center
 
   &:hover {
     cursor-pointer
@@ -38,32 +40,27 @@ const StyledNewRouteButton = tw.button`
   border-2
 `;
 
-const StyledRouteMethodLabel = tw.p`col-start-2`;
-const StyledRoutePathLabel = tw.p``;
+const StyledRouteMethodLabel = tw.div`col-span-3`;
+const StyledRoutePathLabel = tw.div`col-span-3 text-left`;
 
-const RoutesList = () => {
+const RoutesList = ({ routes, handleNewRoute, setSelectedRoute }) => {
   return (
     <StyledMain>
       <StyledRoutesTitle>Routes</StyledRoutesTitle>
       <StyledRoutesList>
-        <StyledRoutesListItem>
-          <StyledRouteMethodLabel>GET</StyledRouteMethodLabel>
-          <StyledRoutePathLabel>/products</StyledRoutePathLabel>
-        </StyledRoutesListItem>
-        <StyledRoutesListItem>
-          <StyledRouteMethodLabel>POST</StyledRouteMethodLabel>
-          <StyledRoutePathLabel>/products</StyledRoutePathLabel>
-        </StyledRoutesListItem>
-        <StyledRoutesListItem>
-          <StyledRouteMethodLabel>GET</StyledRouteMethodLabel>
-          <StyledRoutePathLabel>/users</StyledRoutePathLabel>
-        </StyledRoutesListItem>
-        <StyledRoutesListItem>
-          <StyledRouteMethodLabel>POST</StyledRouteMethodLabel>
-          <StyledRoutePathLabel>/users</StyledRoutePathLabel>
-        </StyledRoutesListItem>
+        {routes.map((route) => {
+          return (
+            <StyledRoutesListItem
+              key={route.id}
+              onClick={() => setSelectedRoute(route)}
+            >
+              <StyledRouteMethodLabel>{route.method}</StyledRouteMethodLabel>
+              <StyledRoutePathLabel>{`/${route.name}`}</StyledRoutePathLabel>
+            </StyledRoutesListItem>
+          );
+        })}
       </StyledRoutesList>
-      <StyledNewRouteButton>New</StyledNewRouteButton>
+      <StyledNewRouteButton onClick={handleNewRoute}>New</StyledNewRouteButton>
     </StyledMain>
   );
 };

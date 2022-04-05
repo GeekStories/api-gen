@@ -1,7 +1,8 @@
 import tw from "tailwind-styled-components";
+import { useState } from "react";
 
 const StyledMain = tw.div`
-  col-span-10
+  col-span-8
   border-black
   border-l-2
   border-b-2
@@ -19,8 +20,14 @@ const StyledRouteMethodSelector = tw.select`
   border-2
 `;
 const StyledRouteNameInputWrapper = tw.div`
-  col-span-11
+  col-span-10
   border-2
+`;
+const StyledDeleteButton = tw.button`
+  col-span-1
+  border-2
+  py-1
+  px-3
 `;
 const StyledRouteNamePrefix = tw.span`
   text-lg 
@@ -28,7 +35,7 @@ const StyledRouteNamePrefix = tw.span`
   text-right
 `;
 const StyledRouteNameInput = tw.input`
-  w-[95%]
+  w-[90%]
   p-1
   &:focus {
     outline-none
@@ -102,43 +109,82 @@ const StyledBodyTextArea = tw.textarea`
   border-2
 `;
 
-const RouteForm = () => {
+const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
+  const handleRouteNameInput = (e) => {
+    const InvalidChars = e.target.value.match(
+      /[A-Z0-9\\/!@#$%^&*()_=\-+?<>,.;:'"`~[\]{}\s]/g
+    );
+
+    if (InvalidChars) {
+      console.log("invalid character in route name: ", InvalidChars);
+      return;
+    }
+
+    handleUpdateRoute({
+      id: selectedRoute.id,
+      item: "NAME",
+      value: e.target.value,
+    });
+  };
+
   return (
     <StyledMain>
       <StyledRouteBasicInfoWrapper>
-        <StyledRouteMethodSelector>
-          <option>GET</option>
+        <StyledRouteMethodSelector
+          onChange={(e) =>
+            handleUpdateRoute({
+              id: selectedRoute.id,
+              item: "METHOD",
+              value: e.target.value,
+            })
+          }
+        >
+          <option name="GET" value="GET">
+            GET
+          </option>
+          <option name="POST" value="POST">
+            POST
+          </option>
+          <option name="PUT" value="PUT">
+            PUT
+          </option>
+          <option name="PATCH" value="PATCH">
+            PATCH
+          </option>
+          <option name="DELETE" value="DELETE">
+            DELETE
+          </option>
         </StyledRouteMethodSelector>
         <StyledRouteNameInputWrapper>
-          <StyledRouteNamePrefix>/</StyledRouteNamePrefix>
-          <StyledRouteNameInput type="text" placeholder="users" />
+          <StyledRouteNamePrefix>{`${
+            selectedRoute.method ? selectedRoute.method : ""
+          } /`}</StyledRouteNamePrefix>
+          <StyledRouteNameInput
+            type="text"
+            placeholder={selectedRoute.name ? selectedRoute.name : "users"}
+            onChange={handleRouteNameInput}
+          />
         </StyledRouteNameInputWrapper>
+        <StyledDeleteButton onClick={() => handleRemoveRoute(selectedRoute.id)}>
+          Delete
+        </StyledDeleteButton>
       </StyledRouteBasicInfoWrapper>
 
       <StyledRouteOptionsWrapper>
         <StyledParamsWrapper>
           <StyledOptionsLabel>params</StyledOptionsLabel>
           <StyledList>
-            <StyledListItem>
-              <StyledListItemText>/users/:id</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/:id</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/:id</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/:id</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
+            {selectedRoute.params
+              ? selectedRoute.params.map((param) => (
+                  <StyledListItem>
+                    <StyledListItemText>
+                      {`/${selectedRoute.name}/:${param.name}`}
+                    </StyledListItemText>
+                    <StyledEditListItem>Edit</StyledEditListItem>
+                    <StyledDeleteListItem>X</StyledDeleteListItem>
+                  </StyledListItem>
+                ))
+              : null}
           </StyledList>
           <StyledNewItemWrapper>
             <StyledNewItem>New</StyledNewItem>
