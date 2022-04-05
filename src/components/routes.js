@@ -9,7 +9,7 @@ const StyledMain = tw.div`
   gap-1
 `;
 
-const Routes = () => {
+const Routes = ({ routes, setFormData }) => {
   return (
     <StyledMain>
       <RoutesList />

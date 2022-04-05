@@ -3,8 +3,9 @@ import tw from "tailwind-styled-components";
 const StyledMain = tw.div`
   col-span-10
   border-black
-  border-2
-  p-2
+  border-l-2
+  border-b-2
+  p-1
 `;
 
 const StyledRouteBasicInfoWrapper = tw.div`
@@ -34,13 +35,7 @@ const StyledRouteNameInput = tw.input`
   }
 `;
 
-const StyledRouteOptionsWrapper = tw.div`
-  border-2
-  h-[23rem]
-  overflow-y-scroll
-  p-1
-  my-1
-`;
+const StyledRouteOptionsWrapper = tw.div`overflow-y-scroll max-h-[26rem]`;
 const StyledOptionsLabel = tw.p`
   font-medium
   underline
@@ -51,19 +46,25 @@ const StyledParamsWrapper = tw.div`
   border-2
   p-1
   my-1
+  max-h-[11.5rem]
 `;
 const StyledQueriesWrapper = tw.div`
   border-2
   p-1
+  max-h-[11.5rem]
 `;
 const StyledBodyWrapper = tw.div`
   border-2
   p-1
+  max-h-[11.5rem]
   my-1
 `;
 
 const StyledList = tw.ol`
   p-1
+  my-1
+  max-h-24
+  overflow-y-scroll
 `;
 const StyledListItem = tw.li`
   grid
@@ -71,6 +72,7 @@ const StyledListItem = tw.li`
   gap-1
   border-2
   p-1
+  my-1
 `;
 const StyledListItemText = tw.p`
   col-span-10
@@ -96,8 +98,8 @@ const StyledNewItem = tw.button`
 `;
 
 const StyledBodyTextArea = tw.textarea`
+  min-w-full
   border-2
-  border-black
 `;
 
 const RouteForm = () => {
@@ -122,6 +124,21 @@ const RouteForm = () => {
               <StyledEditListItem>Edit</StyledEditListItem>
               <StyledDeleteListItem>X</StyledDeleteListItem>
             </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/:id</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/:id</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/:id</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
           </StyledList>
           <StyledNewItemWrapper>
             <StyledNewItem>New</StyledNewItem>
@@ -136,6 +153,21 @@ const RouteForm = () => {
               <StyledEditListItem>Edit</StyledEditListItem>
               <StyledDeleteListItem>X</StyledDeleteListItem>
             </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
+            <StyledListItem>
+              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
+              <StyledEditListItem>Edit</StyledEditListItem>
+              <StyledDeleteListItem>X</StyledDeleteListItem>
+            </StyledListItem>
           </StyledList>
           <StyledNewItem>New</StyledNewItem>
         </StyledQueriesWrapper>
@@ -143,8 +175,7 @@ const RouteForm = () => {
         <StyledBodyWrapper>
           <StyledOptionsLabel>body</StyledOptionsLabel>
           <StyledBodyTextArea
-            rows="5"
-            cols="50"
+            rows="10"
             defaultValue={JSON.stringify(
               { name: "string", age: "number", password: "string" },
               null,

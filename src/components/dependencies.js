@@ -1,10 +1,12 @@
 import tw from "tailwind-styled-components";
+import { useState } from "react";
 
 const StyledMain = tw.div`
   col-span-2
   flex
   flex-col
-  border-2
+  border-r-2
+  border-b-2
   border-black
   gap-1
   text-center
@@ -44,6 +46,7 @@ const StyledListItem = tw.li`
   justify-between
   border-2
   p-1
+  my-1
 `;
 
 const StyledDeleteButton = tw.button`
@@ -51,19 +54,39 @@ const StyledDeleteButton = tw.button`
   px-3
 `;
 
-const Dependencies = () => {
+const Dependencies = ({
+  dependencies,
+  handleNewDependency,
+  handleRemoveDependency,
+}) => {
+  const [dependencyInput, setDependencyInput] = useState("");
   return (
     <StyledMain>
       <StyledListTitle>Dependencies</StyledListTitle>
       <StyledInputWrapper>
-        <StyledInput type="text" placeholder="cors" />
-        <StyledAddButton>Add</StyledAddButton>
+        <StyledInput
+          type="text"
+          placeholder="cors"
+          value={dependencyInput}
+          onChange={(e) => setDependencyInput(e.target.value)}
+        />
+        <StyledAddButton onClick={() => handleNewDependency(dependencyInput)}>
+          Add
+        </StyledAddButton>
       </StyledInputWrapper>
       <StyledListWrapper>
-        <StyledListItem>
-          express
-          <StyledDeleteButton>X</StyledDeleteButton>
-        </StyledListItem>
+        {dependencies.map((dependency) => {
+          return (
+            <StyledListItem key={dependency.id}>
+              {dependency.name}
+              <StyledDeleteButton
+                onClick={() => handleRemoveDependency(dependency.id)}
+              >
+                X
+              </StyledDeleteButton>
+            </StyledListItem>
+          );
+        })}
       </StyledListWrapper>
     </StyledMain>
   );
