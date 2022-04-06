@@ -43,7 +43,7 @@ const StyledNewRouteButton = tw.button`
 const StyledRouteMethodLabel = tw.div`col-span-3`;
 const StyledRoutePathLabel = tw.div`col-span-3 text-left`;
 
-const RoutesList = ({ routes, handleNewRoute, setSelectedRoute }) => {
+const RoutesList = ({ routes, handleNewRoute, handleSelectRoute }) => {
   return (
     <StyledMain>
       <StyledRoutesTitle>Routes</StyledRoutesTitle>
@@ -52,7 +52,7 @@ const RoutesList = ({ routes, handleNewRoute, setSelectedRoute }) => {
           return (
             <StyledRoutesListItem
               key={route.id}
-              onClick={() => setSelectedRoute(route)}
+              onClick={() => handleSelectRoute(route.id)}
             >
               <StyledRouteMethodLabel>{route.method}</StyledRouteMethodLabel>
               <StyledRoutePathLabel>{`/${route.name}`}</StyledRoutePathLabel>

@@ -1,4 +1,4 @@
-const METHODS = ["GET", "UPDATE", "PUT", "POST", "PATCH"];
+const METHODS = ["GET", "DELETE", "PUT", "POST", "PATCH"];
 
 const AddNewRoute = (formData) => {
   return {

@@ -1,5 +1,5 @@
 import tw from "tailwind-styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const StyledMain = tw.div`
   col-span-8
@@ -42,8 +42,8 @@ const StyledRouteNameInput = tw.input`
   }
 `;
 
-const StyledRouteOptionsWrapper = tw.div`overflow-y-scroll max-h-[26rem]`;
-const StyledOptionsLabel = tw.p`
+const StyledRouteOptionWrapper = tw.div`overflow-y-scroll max-h-[26rem]`;
+const StyledOptionLabel = tw.p`
   font-medium
   underline
   underline-offset-1
@@ -110,6 +110,9 @@ const StyledBodyTextArea = tw.textarea`
 `;
 
 const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
+  const [routeName, setRouteName] = useState("");
+  const [routeMethod, setRouteMethod] = useState("GET");
+
   const handleRouteNameInput = (e) => {
     const InvalidChars = e.target.value.match(
       /[A-Z0-9\\/!@#$%^&*()_=\-+?<>,.;:'"`~[\]{}\s]/g
@@ -125,54 +128,68 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
       item: "NAME",
       value: e.target.value,
     });
+
+    setRouteName(e.target.value);
   };
+
+  const handleUpdateMethod = (e) => {
+    handleUpdateRoute({
+      id: selectedRoute.id,
+      item: "METHOD",
+      value: e.target.value,
+    });
+
+    setRouteMethod(e.target.value);
+  };
+
+  const handleRemoveSelectedRoute = (id) => {
+    handleRemoveRoute(id);
+
+    setRouteName("");
+    setRouteMethod("GET");
+    selectedRoute = {};
+  };
+
+  useEffect(() => {
+    if (selectedRoute) {
+      const { name, method } = selectedRoute;
+
+      setRouteName(name??'');
+      setRouteMethod(method??'GET');
+    }
+  }, [selectedRoute]);
 
   return (
     <StyledMain>
       <StyledRouteBasicInfoWrapper>
         <StyledRouteMethodSelector
-          onChange={(e) =>
-            handleUpdateRoute({
-              id: selectedRoute.id,
-              item: "METHOD",
-              value: e.target.value,
-            })
-          }
+          value={routeMethod}
+          onChange={handleUpdateMethod}
         >
-          <option name="GET" value="GET">
-            GET
-          </option>
-          <option name="POST" value="POST">
-            POST
-          </option>
-          <option name="PUT" value="PUT">
-            PUT
-          </option>
-          <option name="PATCH" value="PATCH">
-            PATCH
-          </option>
-          <option name="DELETE" value="DELETE">
-            DELETE
-          </option>
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="PATCH">PATCH</option>
+          <option value="DELETE">DELETE</option>
         </StyledRouteMethodSelector>
         <StyledRouteNameInputWrapper>
-          <StyledRouteNamePrefix>{`${
-            selectedRoute.method ? selectedRoute.method : ""
-          } /`}</StyledRouteNamePrefix>
+          <StyledRouteNamePrefix>/</StyledRouteNamePrefix>
           <StyledRouteNameInput
             type="text"
-            placeholder={selectedRoute.name ? selectedRoute.name : "users"}
+            value={routeName}
             onChange={handleRouteNameInput}
           />
         </StyledRouteNameInputWrapper>
-        <StyledDeleteButton onClick={() => handleRemoveRoute(selectedRoute.id)}>
+        <StyledDeleteButton
+          onClick={() => handleRemoveSelectedRoute(selectedRoute.id)}
+        >
           Delete
         </StyledDeleteButton>
       </StyledRouteBasicInfoWrapper>
 
-      <StyledRouteOptionsWrapper>
+      <StyledRouteOptionWrapper>
         <StyledParamsWrapper>
-          <StyledOptionsLabel>params</StyledOptionsLabel>
+          <StyledOptionLabel>params</StyledOptionLabel>
           <StyledList>
             {selectedRoute.params
               ? selectedRoute.params.map((param) => (
@@ -192,7 +209,7 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
         </StyledParamsWrapper>
 
         <StyledQueriesWrapper>
-          <StyledOptionsLabel>query</StyledOptionsLabel>
+          <StyledOptionLabel>query</StyledOptionLabel>
           <StyledList>
             <StyledListItem>
               <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
@@ -219,7 +236,7 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
         </StyledQueriesWrapper>
 
         <StyledBodyWrapper>
-          <StyledOptionsLabel>body</StyledOptionsLabel>
+          <StyledOptionLabel>body</StyledOptionLabel>
           <StyledBodyTextArea
             rows="10"
             defaultValue={JSON.stringify(
@@ -229,7 +246,7 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
             )}
           ></StyledBodyTextArea>
         </StyledBodyWrapper>
-      </StyledRouteOptionsWrapper>
+      </StyledRouteOptionWrapper>
     </StyledMain>
   );
 };

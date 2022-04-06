@@ -55,6 +55,10 @@ const App = () => {
     setFormData(UpdateRoute(formData, update));
   };
 
+  const handleSelectRoute = (id) => {
+    setSelectedRoute(formData.routes.find((route) => route.id === id));
+  };
+
   return (
     <StyledMain>
       <StyledUserInputArea>
@@ -66,7 +70,7 @@ const App = () => {
         <RoutesList
           routes={formData.routes}
           handleNewRoute={handleNewRoute}
-          setSelectedRoute={setSelectedRoute}
+          handleSelectRoute={handleSelectRoute}
         />
         <RouteForm
           selectedRoute={selectedRoute}
