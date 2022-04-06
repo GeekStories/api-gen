@@ -14,35 +14,38 @@ const StyledRouteBasicInfoWrapper = tw.div`
   grid-cols-12
   gap-1
 `;
-const StyledRouteMethodSelector = tw.select`
-  col-span-1
-  text-lg
-  border-2
-`;
+
 const StyledRouteNameInputWrapper = tw.div`
-  col-span-10
+  col-span-11
   border-2
 `;
+
 const StyledDeleteButton = tw.button`
   col-span-1
   border-2
   py-1
   px-3
 `;
+
 const StyledRouteNamePrefix = tw.span`
   text-lg 
   mx-1
   text-right
 `;
+
 const StyledRouteNameInput = tw.input`
-  w-[90%]
+  w-[95%]
   p-1
   &:focus {
     outline-none
   }
 `;
 
-const StyledRouteOptionWrapper = tw.div`overflow-y-scroll max-h-[26rem]`;
+const StyledRouteOptionWrapper = tw.div`
+  overflow-y-scroll
+  max-h-[26rem]
+`;
+
 const StyledOptionLabel = tw.p`
   font-medium
   underline
@@ -55,11 +58,13 @@ const StyledParamsWrapper = tw.div`
   my-1
   max-h-[11.5rem]
 `;
+
 const StyledQueriesWrapper = tw.div`
   border-2
   p-1
   max-h-[11.5rem]
 `;
+
 const StyledBodyWrapper = tw.div`
   border-2
   p-1
@@ -73,6 +78,7 @@ const StyledList = tw.ol`
   max-h-24
   overflow-y-scroll
 `;
+
 const StyledListItem = tw.li`
   grid
   grid-cols-12
@@ -81,21 +87,26 @@ const StyledListItem = tw.li`
   p-1
   my-1
 `;
+
 const StyledListItemText = tw.p`
   col-span-10
   font-thin
 `;
+
 const StyledEditListItem = tw.button`
   col-span-1
   border-2
 `;
+
 const StyledDeleteListItem = tw.button`
   col-span-1
   border-2
 `;
+
 const StyledNewItemWrapper = tw.div`
   w-full
 `;
+
 const StyledNewItem = tw.button`
   flex
   ml-auto
@@ -109,9 +120,15 @@ const StyledBodyTextArea = tw.textarea`
   border-2
 `;
 
+const BodyDefaultValue = JSON.stringify(
+  { name: "string", age: "number", password: "string" },
+  null,
+  "\t"
+);
+
 const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
   const [routeName, setRouteName] = useState("");
-  const [routeMethod, setRouteMethod] = useState("GET");
+  const [bodyData, setBodyData] = useState(BodyDefaultValue);
 
   const handleRouteNameInput = (e) => {
     const InvalidChars = e.target.value.match(
@@ -132,46 +149,29 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
     setRouteName(e.target.value);
   };
 
-  const handleUpdateMethod = (e) => {
-    handleUpdateRoute({
-      id: selectedRoute.id,
-      item: "METHOD",
-      value: e.target.value,
-    });
-
-    setRouteMethod(e.target.value);
-  };
-
   const handleRemoveSelectedRoute = (id) => {
     handleRemoveRoute(id);
 
     setRouteName("");
-    setRouteMethod("GET");
     selectedRoute = {};
+  };
+
+  const handleBodyUpdate = (e) => {
+    // Call real update function with "BODY" as item
+    setBodyData(e.target.value);
   };
 
   useEffect(() => {
     if (selectedRoute) {
-      const { name, method } = selectedRoute;
+      const { name } = selectedRoute;
 
-      setRouteName(name??'');
-      setRouteMethod(method??'GET');
+      setRouteName(name ?? "");
     }
   }, [selectedRoute]);
 
   return (
     <StyledMain>
       <StyledRouteBasicInfoWrapper>
-        <StyledRouteMethodSelector
-          value={routeMethod}
-          onChange={handleUpdateMethod}
-        >
-          <option value="GET">GET</option>
-          <option value="POST">POST</option>
-          <option value="PUT">PUT</option>
-          <option value="PATCH">PATCH</option>
-          <option value="DELETE">DELETE</option>
-        </StyledRouteMethodSelector>
         <StyledRouteNameInputWrapper>
           <StyledRouteNamePrefix>/</StyledRouteNamePrefix>
           <StyledRouteNameInput
@@ -186,14 +186,13 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
           Delete
         </StyledDeleteButton>
       </StyledRouteBasicInfoWrapper>
-
       <StyledRouteOptionWrapper>
         <StyledParamsWrapper>
           <StyledOptionLabel>params</StyledOptionLabel>
           <StyledList>
             {selectedRoute.params
               ? selectedRoute.params.map((param) => (
-                  <StyledListItem>
+                  <StyledListItem key={param.id}>
                     <StyledListItemText>
                       {`/${selectedRoute.name}/:${param.name}`}
                     </StyledListItemText>
@@ -207,44 +206,30 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
             <StyledNewItem>New</StyledNewItem>
           </StyledNewItemWrapper>
         </StyledParamsWrapper>
-
         <StyledQueriesWrapper>
           <StyledOptionLabel>query</StyledOptionLabel>
           <StyledList>
-            <StyledListItem>
-              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
-            <StyledListItem>
-              <StyledListItemText>/users/?name={"<string>"}</StyledListItemText>
-              <StyledEditListItem>Edit</StyledEditListItem>
-              <StyledDeleteListItem>X</StyledDeleteListItem>
-            </StyledListItem>
+            {selectedRoute.queries
+              ? selectedRoute.queries.map((query) => (
+                  <StyledListItem key={query.id}>
+                    <StyledListItemText>
+                      {`/${selectedRoute.name}?${query.name}=<${query.dataType}>`}
+                    </StyledListItemText>
+                    <StyledEditListItem>Edit</StyledEditListItem>
+                    <StyledDeleteListItem>X</StyledDeleteListItem>
+                  </StyledListItem>
+                ))
+              : null}
           </StyledList>
           <StyledNewItem>New</StyledNewItem>
         </StyledQueriesWrapper>
-
         <StyledBodyWrapper>
           <StyledOptionLabel>body</StyledOptionLabel>
           <StyledBodyTextArea
             rows="10"
-            defaultValue={JSON.stringify(
-              { name: "string", age: "number", password: "string" },
-              null,
-              "\t"
-            )}
-          ></StyledBodyTextArea>
+            defaultValue={bodyData}
+            onChange={handleBodyUpdate}
+          />
         </StyledBodyWrapper>
       </StyledRouteOptionWrapper>
     </StyledMain>

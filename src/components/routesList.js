@@ -1,4 +1,5 @@
 import tw from "tailwind-styled-components";
+import RouteItem from "./routeItem";
 
 const StyledMain = tw.div`
   col-span-2
@@ -18,49 +19,42 @@ const StyledRoutesTitle = tw.h1`
 
 const StyledRoutesList = tw.ol`
   list-none
+  border-2
+  p-1
   h-[24rem]
   overflow-y-scroll
 `;
 
-const StyledRoutesListItem = tw.li`
-  grid
-  grid-cols-6
-  text-center
-  my-2
-  text-lg
-  font-mono
-
-  &:hover {
-    cursor-pointer
-  }
-`;
-
 const StyledNewRouteButton = tw.button`
+  my-1
   w-full
   border-2
 `;
 
-const StyledRouteMethodLabel = tw.div`col-span-3`;
-const StyledRoutePathLabel = tw.div`col-span-3 text-left`;
-
-const RoutesList = ({ routes, handleNewRoute, handleSelectRoute }) => {
+const RoutesList = ({
+  routes,
+  handleNewRoute,
+  handleSelectRoute,
+  handleUpdateRoute,
+}) => {
   return (
     <StyledMain>
       <StyledRoutesTitle>Routes</StyledRoutesTitle>
       <StyledRoutesList>
         {routes.map((route) => {
           return (
-            <StyledRoutesListItem
+            <RouteItem
               key={route.id}
-              onClick={() => handleSelectRoute(route.id)}
-            >
-              <StyledRouteMethodLabel>{route.method}</StyledRouteMethodLabel>
-              <StyledRoutePathLabel>{`/${route.name}`}</StyledRoutePathLabel>
-            </StyledRoutesListItem>
+              route={route}
+              handleUpdateRoute={handleUpdateRoute}
+              handleSelectRoute={handleSelectRoute}
+            />
           );
         })}
       </StyledRoutesList>
-      <StyledNewRouteButton onClick={handleNewRoute}>New</StyledNewRouteButton>
+      <StyledNewRouteButton onClick={handleNewRoute}>
+        New Route
+      </StyledNewRouteButton>
     </StyledMain>
   );
 };

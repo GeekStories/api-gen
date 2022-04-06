@@ -71,6 +71,7 @@ const App = () => {
           routes={formData.routes}
           handleNewRoute={handleNewRoute}
           handleSelectRoute={handleSelectRoute}
+          handleUpdateRoute={handleUpdateRoute}
         />
         <RouteForm
           selectedRoute={selectedRoute}

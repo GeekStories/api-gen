@@ -1,5 +1,3 @@
-const METHODS = ["GET", "DELETE", "PUT", "POST", "PATCH"];
-
 const AddNewRoute = (formData) => {
   return {
     ...formData,
@@ -7,11 +5,20 @@ const AddNewRoute = (formData) => {
       ...formData.routes,
       {
         id: `route_${formData.routes.length}`,
-        method: METHODS[Math.floor(Math.random() * METHODS.length)],
         name: "newroute",
-        params: [],
-        queries: [],
-        body: {},
+        methods: [
+          {
+            id: "met_0_0",
+            type: "GET",
+            statuses: [
+              { id: "stat_0_0", value: 200, message: "OK" },
+              { id: "stat_0_1", value: 500, message: "Error" },
+            ],
+            params: [],
+            queries: [],
+            body: {},
+          },
+        ],
       },
     ],
   };

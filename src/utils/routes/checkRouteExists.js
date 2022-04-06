@@ -1,5 +1,5 @@
 const CheckRouteExists = (routeList, id) => {
-  return routeList.some((route) => route.id === id);
+  return routeList.some((r) => r.id === id);
 };
 
 export default CheckRouteExists;
