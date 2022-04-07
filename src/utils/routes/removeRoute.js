@@ -1,19 +1,17 @@
-import CheckRouteExists from "./checkRouteExists";
-
-const RemoveRoute = (formData, id) => {
-  if (id === "") {
-    console.log(`Invalid Route: ${id}`);
+const RemoveRoute = (formData, routeId) => {
+  if (routeId === "") {
+    console.log(`Invalid Route: ${routeId}`);
     return formData;
   }
 
-  if (!CheckRouteExists(formData.routes, id)) {
-    console.log(`Route: ${id} doesn't exist`);
+  if (!formData.routes.some((route) => route.id === routeId)) {
+    console.log(`Route: ${routeId} doesn't exist`);
     return formData;
   }
 
   return {
     ...formData,
-    routes: formData.routes.filter((route) => route.id !== id),
+    routes: formData.routes.filter((route) => route.id !== routeId),
   };
 };
 

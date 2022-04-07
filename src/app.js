@@ -1,9 +1,5 @@
-import AddNewDependency from "./utils/dependencies/addNewDependency";
-import RemoveDependency from "./utils/dependencies/removeDependency";
-import AddNewRoute from "./utils/routes/addNewRoute";
-import RemoveRoute from "./utils/routes/removeRoute";
-import UpdateRoute from "./utils/routes/updateRoute";
 import tw from "tailwind-styled-components";
+import API from "./API";
 
 import Dependencies from "./components/dependencies";
 import RouteForm from "./components/routeForm";
@@ -38,25 +34,60 @@ const App = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [selectedRoute, setSelectedRoute] = useState({});
 
-  const handleNewDependency = (newValue) => {
-    setFormData(AddNewDependency(formData, newValue));
-  };
-  const handleRemoveDependency = (id) => {
-    setFormData(RemoveDependency(formData, id));
-  };
-
-  const handleNewRoute = () => {
-    setFormData(AddNewRoute(formData));
-  };
-  const handleRemoveRoute = (id) => {
-    setFormData(RemoveRoute(formData, id));
-  };
-  const handleUpdateRoute = (update) => {
-    setFormData(UpdateRoute(formData, update));
-  };
-
   const handleSelectRoute = (id) => {
     setSelectedRoute(formData.routes.find((route) => route.id === id));
+  };
+
+  const UpdateForm = (data) => {
+    let updatedForm = {};
+
+    switch (data.UPDATE_TYPE) {
+      /* DEPENDENCY FUNCTIONS */
+      case "new_dependency":
+        updatedForm = API.NewDependency(formData, data.DEPENDENCY_NAME);
+        break;
+      case "remove_dependency":
+        updatedForm = API.RemoveDependency(formData, data.DEPENDENCY_ID);
+        break;
+      /* ROUTE FUNCTIONS */
+      case "new_route":
+        updatedForm = API.NewRoute(formData);
+        break;
+      case "change_route_name":
+        updatedForm = API.UpdateRouteName(
+          formData,
+          data.ROUTE_ID,
+          data.NEW_NAME
+        );
+        break;
+      case "remove_route":
+        updatedForm = API.RemoveRoute(formData, data.ROUTE_ID);
+        break;
+      /* METHOD FUNCTIONS */
+      case "new_method":
+        updatedForm = API.NewMethod(formData, data.ROUTE_ID);
+        break;
+      case "remove_method":
+        updatedForm = API.RemoveMethod(formData, data.ROUTE_ID, data.METHOD_ID);
+        break;
+      case "change_method_type":
+        const result = API.UpdateMethodType(
+          formData,
+          data.ROUTE_ID,
+          data.METHOD_ID,
+          data.NEW_TYPE
+        );
+
+        if (result.message === "success") updatedForm = result.DATA;
+        if (result.message === "fail") return result.message;
+
+        break;
+      default:
+        updatedForm = formData;
+        break;
+    }
+
+    setFormData(updatedForm);
   };
 
   return (
@@ -64,22 +95,16 @@ const App = () => {
       <StyledUserInputArea>
         <Dependencies
           dependencies={formData.dependencies}
-          handleNewDependency={handleNewDependency}
-          handleRemoveDependency={handleRemoveDependency}
+          UpdateForm={UpdateForm}
         />
         <RoutesList
           routes={formData.routes}
-          handleNewRoute={handleNewRoute}
+          UpdateForm={UpdateForm}
           handleSelectRoute={handleSelectRoute}
-          handleUpdateRoute={handleUpdateRoute}
         />
-        <RouteForm
-          selectedRoute={selectedRoute}
-          handleRemoveRoute={handleRemoveRoute}
-          handleUpdateRoute={handleUpdateRoute}
-        />
+        <RouteForm selectedRoute={selectedRoute} UpdateForm={UpdateForm} />
       </StyledUserInputArea>
-      <Output />
+      <Output formData={formData} />
     </StyledMain>
   );
 };

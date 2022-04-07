@@ -54,12 +54,9 @@ const StyledDeleteButton = tw.button`
   px-3
 `;
 
-const Dependencies = ({
-  dependencies,
-  handleNewDependency,
-  handleRemoveDependency,
-}) => {
+const Dependencies = ({ dependencies, UpdateForm }) => {
   const [dependencyInput, setDependencyInput] = useState("");
+
   return (
     <StyledMain>
       <StyledListTitle>Dependencies</StyledListTitle>
@@ -70,7 +67,14 @@ const Dependencies = ({
           value={dependencyInput}
           onChange={(e) => setDependencyInput(e.target.value)}
         />
-        <StyledAddButton onClick={() => handleNewDependency(dependencyInput)}>
+        <StyledAddButton
+          onClick={() =>
+            UpdateForm({
+              UPDATE_TYPE: "new_dependency",
+              DEPENDENCY_NAME: dependencyInput,
+            })
+          }
+        >
           Add
         </StyledAddButton>
       </StyledInputWrapper>
@@ -80,7 +84,12 @@ const Dependencies = ({
             <StyledListItem key={dependency.id}>
               {dependency.name}
               <StyledDeleteButton
-                onClick={() => handleRemoveDependency(dependency.id)}
+                onClick={() =>
+                  UpdateForm({
+                    UPDATE_TYPE: "remove_dependency",
+                    DEPENDENCY_ID: dependency.id,
+                  })
+                }
               >
                 X
               </StyledDeleteButton>

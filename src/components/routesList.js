@@ -31,12 +31,7 @@ const StyledNewRouteButton = tw.button`
   border-2
 `;
 
-const RoutesList = ({
-  routes,
-  handleNewRoute,
-  handleSelectRoute,
-  handleUpdateRoute,
-}) => {
+const RoutesList = ({ routes, UpdateForm, handleSelectRoute }) => {
   return (
     <StyledMain>
       <StyledRoutesTitle>Routes</StyledRoutesTitle>
@@ -46,13 +41,15 @@ const RoutesList = ({
             <RouteItem
               key={route.id}
               route={route}
-              handleUpdateRoute={handleUpdateRoute}
+              UpdateForm={UpdateForm}
               handleSelectRoute={handleSelectRoute}
             />
           );
         })}
       </StyledRoutesList>
-      <StyledNewRouteButton onClick={handleNewRoute}>
+      <StyledNewRouteButton
+        onClick={() => UpdateForm({ UPDATE_TYPE: "new_route" })}
+      >
         New Route
       </StyledNewRouteButton>
     </StyledMain>

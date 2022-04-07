@@ -15,10 +15,12 @@ const StyledCodeBox = tw.textarea`
   resize-none
 `;
 
-function SelectedFileView() {
+function SelectedFileView({ formData }) {
   return (
     <StyledMain>
-      <StyledCodeBox></StyledCodeBox>
+      <StyledCodeBox
+      // defaultValue={JSON.stringify(formData, null, "\t")}
+      ></StyledCodeBox>
     </StyledMain>
   );
 }

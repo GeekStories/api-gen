@@ -126,11 +126,10 @@ const BodyDefaultValue = JSON.stringify(
   "\t"
 );
 
-const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
+const RouteForm = ({ selectedRoute, UpdateForm }) => {
   const [routeName, setRouteName] = useState("");
-  const [bodyData, setBodyData] = useState(BodyDefaultValue);
 
-  const handleRouteNameInput = (e) => {
+  const handleRouteNameInput = (e, routeId) => {
     const InvalidChars = e.target.value.match(
       /[A-Z0-9\\/!@#$%^&*()_=\-+?<>,.;:'"`~[\]{}\s]/g
     );
@@ -140,25 +139,19 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
       return;
     }
 
-    handleUpdateRoute({
-      id: selectedRoute.id,
-      item: "NAME",
-      value: e.target.value,
+    UpdateForm({
+      UPDATE_TYPE: "change_route_name",
+      ROUTE_ID: routeId,
+      NEW_NAME: e.target.value,
     });
-
     setRouteName(e.target.value);
   };
 
-  const handleRemoveSelectedRoute = (id) => {
-    handleRemoveRoute(id);
+  const handleRemoveSelectedRoute = (routeId) => {
+    UpdateForm({ UPDATE_TYPE: "remove_route", ROUTE_ID: routeId });
 
     setRouteName("");
     selectedRoute = {};
-  };
-
-  const handleBodyUpdate = (e) => {
-    // Call real update function with "BODY" as item
-    setBodyData(e.target.value);
   };
 
   useEffect(() => {
@@ -177,7 +170,7 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
           <StyledRouteNameInput
             type="text"
             value={routeName}
-            onChange={handleRouteNameInput}
+            onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
           />
         </StyledRouteNameInputWrapper>
         <StyledDeleteButton
@@ -225,11 +218,7 @@ const RouteForm = ({ selectedRoute, handleRemoveRoute, handleUpdateRoute }) => {
         </StyledQueriesWrapper>
         <StyledBodyWrapper>
           <StyledOptionLabel>body</StyledOptionLabel>
-          <StyledBodyTextArea
-            rows="10"
-            defaultValue={bodyData}
-            onChange={handleBodyUpdate}
-          />
+          <StyledBodyTextArea rows="10" defaultValue={BodyDefaultValue} />
         </StyledBodyWrapper>
       </StyledRouteOptionWrapper>
     </StyledMain>

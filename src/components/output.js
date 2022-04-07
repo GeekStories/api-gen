@@ -9,11 +9,11 @@ const StyledMain = tw.div`
   rounded-sm
 `;
 
-const Output = () => {
+const Output = ({ formData }) => {
   return (
     <StyledMain>
       <OutputFileView />
-      <SelectedFileView />
+      <SelectedFileView formData={formData} />
     </StyledMain>
   );
 };
