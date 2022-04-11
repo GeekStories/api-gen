@@ -1,6 +1,6 @@
 const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 
-const NewMethod = (formData, routeId) => {
+const CreateMethod = (formData, routeId) => {
   const routeIndex = formData.routes.findIndex((route) => route.id === routeId);
 
   if (formData.routes[routeIndex].methods.length === METHOD_TYPES.length)
@@ -33,9 +33,10 @@ const NewMethod = (formData, routeId) => {
     params: [],
     queries: [],
     body: {},
+    response: "",
   });
 
   return newFormData;
 };
 
-export default NewMethod;
+export default CreateMethod;

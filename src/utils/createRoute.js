@@ -1,4 +1,4 @@
-const AddNewRoute = (formData) => {
+const CreateRoute = (formData) => {
   return {
     ...formData,
     routes: [
@@ -12,4 +12,4 @@ const AddNewRoute = (formData) => {
   };
 };
 
-export default AddNewRoute;
+export default CreateRoute;

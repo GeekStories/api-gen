@@ -1,6 +1,6 @@
 import CheckDependencyExists from "./checkDependencyExists";
 
-const AddNewDependency = (formData, newValue) => {
+const AddDependency = (formData, newValue) => {
   if (newValue === "" || CheckDependencyExists(formData.dependencies, newValue))
     return formData;
 
@@ -13,4 +13,4 @@ const AddNewDependency = (formData, newValue) => {
   };
 };
 
-export default AddNewDependency;
+export default AddDependency;

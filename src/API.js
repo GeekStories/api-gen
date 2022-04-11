@@ -1,36 +1,43 @@
-import AddNewDependency from "./utils/dependencies/addNewDependency";
-import RemoveDependency from "./utils/dependencies/removeDependency";
-import AddNewRoute from "./utils/routes/addNewRoute";
-import RemoveRoute from "./utils/routes/removeRoute";
-import UpdateRouteName from "./utils/routes/updateRouteName";
-import NewMethod from "./utils/routes/newMethod";
-import UpdateMethodType from "./utils/routes/updateMethodType";
-import RemoveMethod from "./utils/routes/removeMethod";
+import AddDependency from "./utils/addDependency";
+import RemoveDependency from "./utils/removeDependency";
+
+import CreateRoute from "./utils/createRoute";
+import RemoveRoute from "./utils/removeRoute";
+import UpdateRouteName from "./utils/updateRouteName";
+
+import CreateMethod from "./utils/createMethod";
+import RemoveMethod from "./utils/removeMethod";
+import UpdateMethodType from "./utils/updateMethodType";
+
+import CreateParam from "./utils/createParam";
 
 const API = {
-  NewDependency: (formData, dependencyName) => {
-    return AddNewDependency(formData, dependencyName);
+  AddDependency: (formData, dependencyName) => {
+    return AddDependency(formData, dependencyName);
   },
   RemoveDependency: (formData, dependencyId) => {
     return RemoveDependency(formData, dependencyId);
   },
-  NewRoute: (formData) => {
-    return AddNewRoute(formData);
+  CreateRoute: (formData) => {
+    return CreateRoute(formData);
   },
-  UpdateMethodType: (formData, routeId, methodId, newMethodType) => {
-    return UpdateMethodType(formData, routeId, methodId, newMethodType);
-  },
-  RemoveMethod: (formData, routeId, methodId) => {
-    return RemoveMethod(formData, routeId, methodId);
-  },
-  NewMethod: (formData, routeId) => {
-    return NewMethod(formData, routeId);
+  RemoveRoute: (formData, routeId) => {
+    return RemoveRoute(formData, routeId);
   },
   UpdateRouteName: (formData, routeId, newRouteName) => {
     return UpdateRouteName(formData, routeId, newRouteName);
   },
-  RemoveRoute: (formData, routeId) => {
-    return RemoveRoute(formData, routeId);
+  CreateMethod: (formData, routeId) => {
+    return CreateMethod(formData, routeId);
+  },
+  RemoveMethod: (formData, routeId, methodId) => {
+    return RemoveMethod(formData, routeId, methodId);
+  },
+  UpdateMethodType: (formData, routeId, methodId, newMethodType) => {
+    return UpdateMethodType(formData, routeId, methodId, newMethodType);
+  },
+  CreateParam: (formData, routeId, methodId, newParam) => {
+    return CreateParam(formData, routeId, methodId, newParam);
   },
 };
 

@@ -1,40 +1,20 @@
 import tw from "tailwind-styled-components";
 import MethodSelector from "./methodSelector";
 
-const StyledRoutesListItem = tw.li`
-  my-2
-  text-lg
-  font-mono
-
-  &:hover {
-    cursor-pointer
-  }
-`;
-
-const StyledNewStatusButton = tw.button`
-  ml-16
-  my-1
-  px-5
-  border-2
-`;
-const StyledDeleteMethodButton = tw.button`
-  ml-10
-  mb-1
-  px-5
-  border-2
-`;
-const StyledNewMethodButton = tw.button`
-  ml-10
-  my-1
-  px-5
-  border-2
-`;
-
+const StyledRoutesListItem = tw.li`my-2 text-lg font-mono &:hover { cursor-pointer }`;
+const StyledNewStatusButton = tw.button`ml-16 my-1 px-5 border-2`;
+const StyledDeleteMethodButton = tw.button`ml-10 mb-1 px-5 border-2`;
+const StyledNewMethodButton = tw.button`ml-10 my-1 px-5 border-2`;
 const StyledRouteMethodLabel = tw.div`text-sm ml-10`;
 const StyledRoutePathLabel = tw.div`text-sm`;
 const StyledMethodStatusLabel = tw.div`text-sm ml-16`;
 
-const RouteItem = ({ route, UpdateForm, handleSelectRoute }) => {
+const RouteItem = ({
+  route,
+  UpdateForm,
+  handleSelectRoute,
+  handleSelectMethod,
+}) => {
   return (
     <StyledRoutesListItem onClick={() => handleSelectRoute(route.id)}>
       <StyledRoutePathLabel>{`/${route.name}`}</StyledRoutePathLabel>
@@ -67,6 +47,11 @@ const RouteItem = ({ route, UpdateForm, handleSelectRoute }) => {
           >
             Delete Method
           </StyledDeleteMethodButton>
+          <StyledNewMethodButton
+            onClick={() => handleSelectMethod(route.id, method.id)}
+          >
+            Select Method
+          </StyledNewMethodButton>
         </div>
       ))}
       <StyledNewMethodButton
