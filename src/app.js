@@ -69,12 +69,15 @@ const App = () => {
         break;
       case "remove_route":
         updatedForm = API.RemoveRoute(formData, data.ROUTE_ID);
+        setSelectedRoute({});
+        setSelectedMethod({});
         break;
       case "new_method":
         updatedForm = API.CreateMethod(formData, data.ROUTE_ID);
         break;
       case "remove_method":
         updatedForm = API.RemoveMethod(formData, data.ROUTE_ID, data.METHOD_ID);
+        setSelectedMethod({});
         break;
       case "change_method_type":
         const result = API.UpdateMethodType(
@@ -93,6 +96,15 @@ const App = () => {
           formData,
           data.ROUTE_ID,
           data.METHOD_ID,
+          data.PARAM
+        );
+        break;
+      case "update_param":
+        updatedForm = API.UpdateParam(
+          formData,
+          data.ROUTE_ID,
+          data.METHOD_ID,
+          data.PARAM_ID,
           data.PARAM
         );
         break;

@@ -1,7 +1,7 @@
 import tw from "tailwind-styled-components";
 import { useState } from "react";
 
-import UpdateValidationOptions from "../../utils/updateValidationOptions";
+import UpdateValidationOptions from "../../utils/validationOptions";
 import StringValidationOptions from "../validation/stringValidationOptions";
 import NumberValidationOptions from "../validation/numberValidationOptions";
 
@@ -23,16 +23,10 @@ const StyledNewQueryModal = tw.div`
 
 const StyledInput = tw.input`h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg font-mono`;
 const StyledTypeSelect = tw.select`h-8 pl-2 rounded border-2 border-gray-300 bg-gray-100 shadow-inner text-lg font-mono`;
-
 const StyledModalInputsWrapper = tw.div`grid grid-cols-2 gap-1 text-center`;
-
 const StyledModalControlsWrapper = tw.div`grid grid-cols-2 gap-1`;
 const StyledModalControl = tw.button`rounded border-2 border-gray-300 text-lg`;
-
-const StyledValidationOptionsWrapper = tw.div`w-full`;
-
 const StyledRoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
-
 const StyledStringValidationOptions = tw(StringValidationOptions)``;
 const StyledNumberValidationOptions = tw(NumberValidationOptions)``;
 
@@ -112,19 +106,13 @@ const QueriesModal = ({ isOpen, handleQueriesModal, routeName }) => {
         </StyledTypeSelect>
       </StyledModalInputsWrapper>
 
-      <StyledValidationOptionsWrapper>
-        {selectedType === "string" && (
-          <StyledStringValidationOptions
-            UpdateValidations={UpdateValidations}
-          />
-        )}
+      {selectedType === "string" && (
+        <StyledStringValidationOptions UpdateValidations={UpdateValidations} />
+      )}
 
-        {selectedType === "number" && (
-          <StyledNumberValidationOptions
-            UpdateValidations={UpdateValidations}
-          />
-        )}
-      </StyledValidationOptionsWrapper>
+      {selectedType === "number" && (
+        <StyledNumberValidationOptions UpdateValidations={UpdateValidations} />
+      )}
 
       <StyledModalControlsWrapper>
         <StyledModalControl>Create</StyledModalControl>

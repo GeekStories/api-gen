@@ -10,6 +10,7 @@ import RemoveMethod from "./utils/removeMethod";
 import UpdateMethodType from "./utils/updateMethodType";
 
 import CreateParam from "./utils/createParam";
+import UpdateParam from "./utils/updateParam";
 
 const API = {
   AddDependency: (formData, dependencyName) => {
@@ -38,6 +39,9 @@ const API = {
   },
   CreateParam: (formData, routeId, methodId, newParam) => {
     return CreateParam(formData, routeId, methodId, newParam);
+  },
+  UpdateParam: (formData, routeId, methodId, paramId, newParam) => {
+    return UpdateParam(formData, routeId, methodId, paramId, newParam);
   },
 };
 

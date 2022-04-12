@@ -21,6 +21,10 @@ const RouteParamsBox = ({ params, routeName, handleOpenParamsModal }) => {
                   {routeName === ""
                     ? `../:${param.name}`
                     : `/${routeName}/:${param.name}`}
+                  {" | "}{" "}
+                  {param.options.map((option) => (
+                    <>{`${option.key}: ${option.value} | `}</>
+                  ))}
                 </StyledListItemText>
                 <StyledEditListItem>Edit</StyledEditListItem>
                 <StyledDeleteListItem>X</StyledDeleteListItem>
