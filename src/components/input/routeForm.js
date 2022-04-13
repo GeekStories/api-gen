@@ -1,12 +1,10 @@
 import tw from "tailwind-styled-components";
 import { useState, useEffect } from "react";
 
-import MethodParamsBox from "./methodParamsBox";
-import MethodQueriesBox from "./methodQueriesBox";
-import MethodBodyBox from "./methodBodyBox";
-import MethodResponseBodyBox from "./methodResponseBodyBox";
+import ParamsList from "./paramsList";
+import RequestBodyBox from "./requestBodyBox";
+import ResponseBodyBox from "./responseBodyBox";
 import ParamsModal from "../modals/paramsModal";
-import QueriesModal from "../modals/queriesModal";
 
 const StyledMain = tw.div`col-span-8 border-black border-l-2 border-b-2 p-1`;
 const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 gap-1`;
@@ -65,6 +63,15 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
     setQueriesModal(!isQueriesOpen);
   };
 
+  const handleNewQuery = (newQuery) => {
+    UpdateForm({
+      UPDATE_TYPE: "new_query",
+      ROUTE_ID: selectedRoute.id,
+      METHOD_ID: selectedMethod.id,
+      QUERY: newQuery,
+    });
+  };
+
   useEffect(() => {
     if (selectedRoute) {
       const { name } = selectedRoute;
@@ -77,15 +84,20 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
     <StyledMain>
       <ParamsModal
         isOpen={isParamsOpen}
-        handleParamsModal={handleParamsModal}
+        handleModal={handleParamsModal}
         routeName={selectedRoute.name}
         handleNewParam={handleNewParam}
+        handleNewQuery={handleNewQuery}
+        modalType="param"
       />
 
-      <QueriesModal
+      <ParamsModal
         isOpen={isQueriesOpen}
-        handleQueriesModal={handleQueriesModal}
+        handleModal={handleQueriesModal}
         routeName={selectedRoute.name}
+        handleNewParam={handleNewParam}
+        handleNewQuery={handleNewQuery}
+        modalType="query"
       />
 
       <StyledRouteBasicInfoWrapper>
@@ -105,21 +117,25 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
       </StyledRouteBasicInfoWrapper>
 
       <StyledRouteOptionWrapper>
-        <MethodParamsBox
-          params={selectedMethod.params}
+        <ParamsList
+          optionLabel="Parameters"
+          listItems={selectedMethod.params}
           routeName={selectedRoute.name}
-          handleOpenParamsModal={handleParamsModal}
+          handleOpenModal={handleParamsModal}
+          paramType="param"
         />
 
-        <MethodQueriesBox
-          queries={selectedRoute.queries}
+        <ParamsList
+          optionLabel="Queries"
+          listItems={selectedMethod.queries}
           routeName={selectedRoute.name}
-          handleOpenQueriesModal={handleQueriesModal}
+          handleOpenModal={handleQueriesModal}
+          paramType="query"
         />
 
-        <MethodBodyBox body={selectedMethod.body} />
+        <RequestBodyBox body={selectedMethod.body} />
 
-        <MethodResponseBodyBox body={selectedMethod.response} />
+        <ResponseBodyBox body={selectedMethod.response} />
       </StyledRouteOptionWrapper>
     </StyledMain>
   );

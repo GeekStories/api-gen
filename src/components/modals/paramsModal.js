@@ -1,5 +1,5 @@
 import tw from "tailwind-styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import ValidationOptions from "../../utils/validationOptions";
 import StringValidationOptions from "../validation/stringValidationOptions";
@@ -20,6 +20,7 @@ const StyledNewParamModal = tw.div`
   w-[60rem]
   p-2
 `;
+
 const StyledInput = tw.input`h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg font-mono`;
 const StyledTypeSelect = tw.select`h-8 pl-2 rounded border-2 border-gray-300 bg-gray-100 shadow-inner text-lg font-mono`;
 const StyledModalInputsWrapper = tw.div`grid grid-cols-2 gap-1 text-center`;
@@ -29,11 +30,14 @@ const StyledRoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
 
 const ParamsModal = ({
   isOpen,
-  handleParamsModal,
+  handleModal,
   routeName,
   handleNewParam,
+  handleNewQuery,
+  modalType,
 }) => {
   const [paramName, setParamName] = useState("example");
+  const [newRouteName, setNewRouteName] = useState("");
   const [selectedType, setSelectedType] = useState("string");
   const [validationOptions, setValidationOptions] = useState([]);
 
@@ -41,6 +45,9 @@ const ParamsModal = ({
   const [maxLength, setMaxLength] = useState(1);
   const [alphanum, setAlphanum] = useState(false);
   const [stringRequired, setStringRequired] = useState(false);
+
+  const [isMinLengthEnabled, setIsMinLengthEnabled] = useState(false);
+  const [isMaxLengthEnabled, setIsMaxLengthEnabled] = useState(false);
 
   const [greater, setGreater] = useState(0);
   const [less, setLess] = useState(0);
@@ -54,6 +61,23 @@ const ParamsModal = ({
   const [isMinEnabled, setIsMinEnabled] = useState(false);
   const [isMaxEnabled, setIsMaxEnabled] = useState(false);
 
+  const handleSwitchMinLength = () => {
+    // Value doesn't update in the same function!
+    setIsMinLengthEnabled(!isMinLengthEnabled);
+
+    // false => true
+    if (!isMinLengthEnabled)
+      setValidationOptions(
+        ValidationOptions.Add(validationOptions, "minLength", minLength)
+      );
+
+    // true => false
+    if (isMinLengthEnabled) {
+      setValidationOptions(
+        ValidationOptions.Remove(validationOptions, "minLength")
+      );
+    }
+  };
   const handleChangeMinLength = (e) => {
     const newValue = Number(e.target.value);
 
@@ -76,6 +100,23 @@ const ParamsModal = ({
     } else {
       setValidationOptions(
         ValidationOptions.Add(validationOptions, "minLength", newValue)
+      );
+    }
+  };
+  const handleSwitchMaxLength = () => {
+    // Value doesn't update in the same function!
+    setIsMaxLengthEnabled(!isMaxLengthEnabled);
+
+    // false => true
+    if (!isMaxLengthEnabled)
+      setValidationOptions(
+        ValidationOptions.Add(validationOptions, "maxLength", maxLength)
+      );
+
+    // true => false
+    if (isMaxLengthEnabled) {
+      setValidationOptions(
+        ValidationOptions.Remove(validationOptions, "maxLength")
       );
     }
   };
@@ -345,27 +386,42 @@ const ParamsModal = ({
     setParamName(newValue);
   };
 
-  const handleCloseParamsModal = () => {
-    handleClearValidationOptions();
-    handleParamsModal();
+  const handleCloseModal = () => {
+    ClearValidationOptions();
+    handleModal();
   };
 
   const handleCreateParam = (e) => {
-    handleNewParam({
-      options: validationOptions,
-      name: paramName,
-    });
+    switch (modalType) {
+      case "param":
+        handleNewParam({
+          options: validationOptions,
+          type: selectedType,
+          name: paramName,
+        });
+        break;
+      case "query":
+        handleNewQuery({
+          options: validationOptions,
+          type: selectedType,
+          name: paramName,
+        });
+        break;
+      default:
+        break;
+    }
 
-    handleClearValidationOptions();
-    handleParamsModal();
+    handleCloseModal();
   };
 
-  const handleClearValidationOptions = () => {
+  const ClearValidationOptions = () => {
     // Restore all values to default
     setIsGreaterEnabled(false);
     setIsLessEnabled(false);
     setIsMaxEnabled(false);
     setIsMinEnabled(false);
+    setIsMaxLengthEnabled(false);
+    setIsMinLengthEnabled(false);
 
     setMax(0);
     setMin(0);
@@ -380,13 +436,27 @@ const ParamsModal = ({
     setAlphanum(false);
 
     setValidationOptions([]);
+    setSelectedType("string");
   };
+
+  useEffect(() => {
+    let tempName = routeName;
+    let nameLength = routeName.length;
+
+    if (modalType === "query") {
+      if (!nameLength) tempName = `..?${paramName}=<${selectedType}>`;
+      else tempName = `/${routeName}?${paramName}=<${selectedType}>`;
+    } else {
+      if (!nameLength) tempName = `../:${paramName}`;
+      else tempName = `/${routeName}/:${paramName}`;
+    }
+
+    setNewRouteName(tempName);
+  }, [modalType, paramName, routeName, selectedType]);
 
   return (
     <StyledNewParamModal $state={isOpen}>
-      <StyledRoutePreview>
-        {routeName === "" ? `../:${paramName}` : `/${routeName}/:${paramName}`}
-      </StyledRoutePreview>
+      <StyledRoutePreview>{newRouteName}</StyledRoutePreview>
 
       <StyledModalInputsWrapper>
         <StyledInput
@@ -404,8 +474,12 @@ const ParamsModal = ({
 
       {selectedType === "string" && (
         <StringValidationOptions
+          isMaxLengthEnabled={isMaxLengthEnabled}
           maxLength={maxLength}
+          handleSwitchMaxLength={handleSwitchMaxLength}
+          isMinLengthEnabled={isMinLengthEnabled}
           minLength={minLength}
+          handleSwitchMinLength={handleSwitchMinLength}
           alphanum={alphanum}
           stringRequired={stringRequired}
           handleChangeMaxLength={handleChangeMaxLength}
@@ -442,7 +516,7 @@ const ParamsModal = ({
         <StyledModalControl onClick={handleCreateParam}>
           Create
         </StyledModalControl>
-        <StyledModalControl onClick={handleCloseParamsModal}>
+        <StyledModalControl onClick={handleCloseModal}>
           Cancel
         </StyledModalControl>
       </StyledModalControlsWrapper>

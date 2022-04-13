@@ -5,6 +5,8 @@ import CreateRoute from "./utils/createRoute";
 import RemoveRoute from "./utils/removeRoute";
 import UpdateRouteName from "./utils/updateRouteName";
 
+import CreateQuery from "./utils/createQuery";
+
 import CreateMethod from "./utils/createMethod";
 import RemoveMethod from "./utils/removeMethod";
 import UpdateMethodType from "./utils/updateMethodType";
@@ -42,6 +44,9 @@ const API = {
   },
   UpdateParam: (formData, routeId, methodId, paramId, newParam) => {
     return UpdateParam(formData, routeId, methodId, paramId, newParam);
+  },
+  CreateQuery: (formData, routeId, methodId, newQuery) => {
+    return CreateQuery(formData, routeId, methodId, newQuery);
   },
 };
 

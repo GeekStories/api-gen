@@ -108,6 +108,14 @@ const App = () => {
           data.PARAM
         );
         break;
+      case "new_query":
+        updatedForm = API.CreateQuery(
+          formData,
+          data.ROUTE_ID,
+          data.METHOD_ID,
+          data.QUERY
+        );
+        break;
       default:
         updatedForm = formData;
         break;
