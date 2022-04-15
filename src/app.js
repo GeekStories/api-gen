@@ -7,18 +7,8 @@ import RoutesList from "./components/input/routesList";
 import Output from "./components/output/output";
 import { useState } from "react";
 
-const StyledMain = tw.div`
-  h-screen
-  grid
-  grid-rows-2
-  gap-1
-`;
-
-const StyledUserInputArea = tw.div`
-  grid
-  grid-cols-12
-  gap-1
-`;
+const StyledMain = tw.div`h-screen grid grid-rows-2 gap-1`;
+const StyledUserInputArea = tw.div`grid grid-cols-12 gap-1`;
 
 const defaultFormData = {
   dependencies: [
@@ -39,7 +29,7 @@ const App = () => {
     setSelectedRoute(formData.routes.find((route) => route.id === id));
   };
 
-  const handleSelectMethod = (routeId, methodId) => {
+  const handleSelectMethod = (methodId, routeId) => {
     setSelectedMethod(
       formData.routes
         .find((route) => route.id === routeId)
@@ -99,13 +89,13 @@ const App = () => {
           data.PARAM
         );
         break;
-      case "update_param":
-        updatedForm = API.UpdateParam(
+      case "remove_param":
+        updatedForm = API.RemoveParam(
           formData,
           data.ROUTE_ID,
           data.METHOD_ID,
           data.PARAM_ID,
-          data.PARAM
+          data.TYPE
         );
         break;
       case "new_query":

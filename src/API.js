@@ -5,14 +5,13 @@ import CreateRoute from "./utils/createRoute";
 import RemoveRoute from "./utils/removeRoute";
 import UpdateRouteName from "./utils/updateRouteName";
 
-import CreateQuery from "./utils/createQuery";
-
 import CreateMethod from "./utils/createMethod";
 import RemoveMethod from "./utils/removeMethod";
 import UpdateMethodType from "./utils/updateMethodType";
 
+import CreateQuery from "./utils/createQuery";
 import CreateParam from "./utils/createParam";
-import UpdateParam from "./utils/updateParam";
+import RemoveParam from "./utils/removeParam";
 
 const API = {
   AddDependency: (formData, dependencyName) => {
@@ -42,8 +41,8 @@ const API = {
   CreateParam: (formData, routeId, methodId, newParam) => {
     return CreateParam(formData, routeId, methodId, newParam);
   },
-  UpdateParam: (formData, routeId, methodId, paramId, newParam) => {
-    return UpdateParam(formData, routeId, methodId, paramId, newParam);
+  RemoveParam: (formData, routeId, methodId, paramId, paramType) => {
+    return RemoveParam(formData, routeId, methodId, paramId, paramType);
   },
   CreateQuery: (formData, routeId, methodId, newQuery) => {
     return CreateQuery(formData, routeId, methodId, newQuery);

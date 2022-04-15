@@ -48,7 +48,7 @@ const RouteItem = ({
             Delete Method
           </StyledDeleteMethodButton>
           <StyledNewMethodButton
-            onClick={() => handleSelectMethod(route.id, method.id)}
+            onClick={() => handleSelectMethod(method.id, route.id)}
           >
             Select Method
           </StyledNewMethodButton>

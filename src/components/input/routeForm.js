@@ -58,6 +58,16 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
     });
   };
 
+  const handleRemoveParam = (paramId, paramType) => {
+    UpdateForm({
+      UPDATE_TYPE: "remove_param",
+      ROUTE_ID: selectedRoute.id,
+      METHOD_ID: selectedMethod.id,
+      PARAM_ID: paramId,
+      TYPE: paramType,
+    });
+  };
+
   const handleQueriesModal = () => {
     if (isParamsOpen) setParamsModal(false);
     setQueriesModal(!isQueriesOpen);
@@ -123,6 +133,7 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
           routeName={selectedRoute.name}
           handleOpenModal={handleParamsModal}
           paramType="param"
+          handleRemoveParam={handleRemoveParam}
         />
 
         <ParamsList
@@ -131,6 +142,7 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
           routeName={selectedRoute.name}
           handleOpenModal={handleQueriesModal}
           paramType="query"
+          handleRemoveParam={handleRemoveParam}
         />
 
         <RequestBodyBox body={selectedMethod.body} />

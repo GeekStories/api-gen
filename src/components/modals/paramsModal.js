@@ -31,7 +31,7 @@ const StyledRoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
 const ParamsModal = ({
   isOpen,
   handleModal,
-  routeName,
+  routeName = "",
   handleNewParam,
   handleNewQuery,
   modalType,
@@ -103,6 +103,7 @@ const ParamsModal = ({
       );
     }
   };
+
   const handleSwitchMaxLength = () => {
     // Value doesn't update in the same function!
     setIsMaxLengthEnabled(!isMaxLengthEnabled);
@@ -391,7 +392,7 @@ const ParamsModal = ({
     handleModal();
   };
 
-  const handleCreateParam = (e) => {
+  const handleCreateParam = () => {
     switch (modalType) {
       case "param":
         handleNewParam({

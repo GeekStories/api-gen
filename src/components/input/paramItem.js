@@ -1,24 +1,24 @@
 import tw from "tailwind-styled-components";
 
-const StyledListItem = tw.li`grid grid-cols-12 gap-1 border-2 p-1 my-1`;
-const StyledListItemText = tw.div`col-span-10 font-thin flex flex-row gap-1`;
+const StyledListItem = tw.li`flex flex-row gap-4 border-2 p-1 mb-1`;
+const StyledListItemText = tw.div`font-thin flex flex-row gap-1 my-auto`;
 const StyledOptionsList = tw.p`before:content-['|']`;
-const StyledEditListItem = tw.button`col-span-1 border-2`;
-const StyledDeleteListItem = tw.button`col-span-1 border-2`;
+const StyledDeleteItem = tw.button`px-10 border-2`;
 
-const ParamItem = ({ item, routeName, paramType }) => {
+const ParamItem = ({ item, routeName, paramType, handleRemoveParam }) => {
   return (
     <StyledListItem>
       <StyledListItemText>
-        {routeName === "" ? `../:${item.name}` : `/${routeName}/:${item.name}`}{" "}
+        {routeName === "" ? `../:${item.name}` : `/${routeName}/:${item.name}`}
         {item.options.map((option) => (
           <StyledOptionsList
             key={`option_${paramType}_${option.key}`}
           >{` ${option.key}: ${option.value}`}</StyledOptionsList>
         ))}
       </StyledListItemText>
-      <StyledEditListItem>Edit</StyledEditListItem>
-      <StyledDeleteListItem>X</StyledDeleteListItem>
+      <StyledDeleteItem onClick={() => handleRemoveParam(item.id, paramType)}>
+        Delete
+      </StyledDeleteItem>
     </StyledListItem>
   );
 };

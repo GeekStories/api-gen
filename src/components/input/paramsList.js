@@ -13,18 +13,20 @@ const ParamsList = ({
   routeName,
   handleOpenModal,
   paramType,
+  handleRemoveParam,
 }) => {
   return (
     <StyledParamsWrapper>
       <StyledOptionLabel>{optionLabel}</StyledOptionLabel>
       <StyledList>
         {listItems
-          ? listItems.map((item, index) => (
+          ? listItems.map((item) => (
               <ParamItem
                 key={item.id}
                 item={item}
                 routeName={routeName}
                 paramType={paramType}
+                handleRemoveParam={handleRemoveParam}
               />
             ))
           : null}
