@@ -1,61 +1,26 @@
 import tw from "tailwind-styled-components";
 import { useState } from "react";
 
-const StyledMain = tw.div`
-  col-span-2
-  flex
-  flex-col
-  border-r-2
-  border-b-2
-  border-black
-  gap-1
-  text-center
-  p-1
-`;
-
-const StyledListTitle = tw.h1`
-  text-lg
-  font-medium
-  underline
-`;
-
-const StyledInputWrapper = tw.div`
-  grid
-  grid-cols-6
-  gap-1
-`;
-
-const StyledInput = tw.input`
-  col-span-5
-  border-2
-`;
-
-const StyledAddButton = tw.button`
-  col-span-1;
-  border-2
-  text-sm
-`;
-
-const StyledListWrapper = tw.ol`
-  h-full
-  p-1
-`;
-
-const StyledListItem = tw.li`
-  flex
-  justify-between
-  border-2
-  p-1
-  my-1
-`;
-
-const StyledDeleteButton = tw.button`
-  border-2
-  px-3
-`;
+const StyledMain = tw.div`col-span-2 flex flex-col border-r-2 border-b-2 border-black gap-1 text-center p-1`;
+const StyledListTitle = tw.h1`text-lg font-medium underline`;
+const StyledInputWrapper = tw.div`grid grid-cols-6 gap-1`;
+const StyledInput = tw.input`col-span-5 border-2`;
+const StyledAddButton = tw.button`col-span-1 border-2 text-sm`;
+const StyledListWrapper = tw.ol`h-full p-1`;
+const StyledListItem = tw.li`flex justify-between border-2 p-1 my-1`;
+const StyledDeleteButton = tw.button`border-2 px-3`;
 
 const Dependencies = ({ dependencies, UpdateForm }) => {
   const [dependencyInput, setDependencyInput] = useState("");
+
+  const handleAddDependency = () => {
+    UpdateForm({
+      UPDATE_TYPE: "new_dependency",
+      DEPENDENCY_NAME: dependencyInput,
+    });
+
+    setDependencyInput("");
+  };
 
   return (
     <StyledMain>
@@ -63,20 +28,11 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
       <StyledInputWrapper>
         <StyledInput
           type="text"
-          placeholder="cors"
+          placeholder="axios"
           value={dependencyInput}
           onChange={(e) => setDependencyInput(e.target.value)}
         />
-        <StyledAddButton
-          onClick={() =>
-            UpdateForm({
-              UPDATE_TYPE: "new_dependency",
-              DEPENDENCY_NAME: dependencyInput,
-            })
-          }
-        >
-          Add
-        </StyledAddButton>
+        <StyledAddButton onClick={handleAddDependency}>Add</StyledAddButton>
       </StyledInputWrapper>
       <StyledListWrapper>
         {dependencies.map((dependency) => {
@@ -88,6 +44,7 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
                   UpdateForm({
                     UPDATE_TYPE: "remove_dependency",
                     DEPENDENCY_ID: dependency.id,
+                    DEPENDENCY_NAME: dependency.name,
                   })
                 }
               >

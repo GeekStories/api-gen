@@ -2,8 +2,7 @@ import tw from "tailwind-styled-components";
 
 import ParamItem from "./paramItem";
 
-const StyledParamsWrapper = tw.div`p-1 h-44`;
-const StyledList = tw.ol`p-1 h-20 overflow-y-scroll border-2`;
+const StyledList = tw.ol`p-1 h-24 overflow-y-scroll border-2`;
 const StyledOptionLabel = tw.p`font-medium underline underline-offset-1`;
 const StyledNewItemButton = tw.button`flex mt-1 ml-auto border-2 px-5 py-1`;
 
@@ -16,7 +15,7 @@ const ParamsList = ({
   handleRemoveParam,
 }) => {
   return (
-    <StyledParamsWrapper>
+    <>
       <StyledOptionLabel>{optionLabel}</StyledOptionLabel>
       <StyledList>
         {listItems
@@ -32,7 +31,7 @@ const ParamsList = ({
           : null}
         <StyledNewItemButton onClick={handleOpenModal}>New</StyledNewItemButton>
       </StyledList>
-    </StyledParamsWrapper>
+    </>
   );
 };
 

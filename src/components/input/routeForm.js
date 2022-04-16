@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 
 import ParamsList from "./paramsList";
 import RequestBodyBox from "./requestBodyBox";
-import ResponseBodyBox from "./responseBodyBox";
 import ParamsModal from "../modals/paramsModal";
 
 const StyledMain = tw.div`col-span-8 border-black border-l-2 border-b-2 p-1`;
-const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 gap-1`;
-const StyledRouteNameInputWrapper = tw.div`col-span-11 border-2`;
-const StyledDeleteButton = tw.button`col-span-1 border-2 py-1 px-3`;
-const StyledRouteNamePrefix = tw.span`text-lg mx-1 text-right`;
-const StyledRouteNameInput = tw.input`w-[90%] p-1 &:focus { outline-none }`;
-const StyledRouteOptionWrapper = tw.div`flex flex-col overflow-y-scroll max-h-[26rem]`;
+const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 `;
+const StyledRouteNameInputWrapper = tw.div`col-span-10 flex border-2 shadow-inner`;
+const StyledRouteMethodPrefix = tw.span`col-span-1 text-center text-xl tracking-wider border-2 border-gray-200`;
+const StyledRouteNameInput = tw.input`w-full pl-2 text-lg focus:outline-none bg-gray-200 transition ease-in-out delay-100 text-gray-900`;
+const StyledRoutePrefix = tw.p`pl-1 bg-gray-200 text-gray-600 text-lg`;
+const StyledDeleteButton = tw.button`col-span-1 border-2`;
+const StyledRouteOptionWrapper = tw.div`flex flex-col max-h-[26rem]`;
 
 const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
   const [routeName, setRouteName] = useState("");
@@ -111,8 +111,9 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
       />
 
       <StyledRouteBasicInfoWrapper>
+        <StyledRouteMethodPrefix>{selectedMethod.type}</StyledRouteMethodPrefix>
         <StyledRouteNameInputWrapper>
-          <StyledRouteNamePrefix>{selectedMethod.type} /</StyledRouteNamePrefix>
+          <StyledRoutePrefix>/</StyledRoutePrefix>
           <StyledRouteNameInput
             type="text"
             value={routeName}
@@ -146,8 +147,6 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
         />
 
         <RequestBodyBox body={selectedMethod.body} />
-
-        <ResponseBodyBox body={selectedMethod.response} />
       </StyledRouteOptionWrapper>
     </StyledMain>
   );

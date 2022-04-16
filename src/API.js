@@ -17,8 +17,8 @@ const API = {
   AddDependency: (formData, dependencyName) => {
     return AddDependency(formData, dependencyName);
   },
-  RemoveDependency: (formData, dependencyId) => {
-    return RemoveDependency(formData, dependencyId);
+  RemoveDependency: (formData, dependencyId, dependencyName) => {
+    return RemoveDependency(formData, dependencyId, dependencyName);
   },
   CreateRoute: (formData) => {
     return CreateRoute(formData);

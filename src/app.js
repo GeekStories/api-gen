@@ -7,17 +7,32 @@ import RoutesList from "./components/input/routesList";
 import Output from "./components/output/output";
 import { useState } from "react";
 
+import defaultPackageJson from "./defaultPackageJson";
+
 const StyledMain = tw.div`h-screen grid grid-rows-2 gap-1`;
 const StyledUserInputArea = tw.div`grid grid-cols-12 gap-1`;
 
 const defaultFormData = {
   dependencies: [
     { name: "express", id: "dep_0" },
-    { name: "react@v18.0.0", id: "dep_1" },
-    { name: "react-dom@v18.0.0", id: "dep_2" },
+    { name: "cors", id: "dep_1" },
   ],
   routes: [],
-  files: [],
+  dir: {
+    defaults: [
+      { id: "root_file_0", name: "app", ext: "js", contents: "" },
+      { id: "root_file_1", name: "server", ext: "js", contents: "" },
+      {
+        id: "root_file_2",
+        name: "package",
+        ext: "json",
+        contents: defaultPackageJson,
+      },
+    ],
+    middleware: [],
+    routes: [],
+    repositories: [],
+  },
 };
 
 const App = () => {
@@ -45,7 +60,11 @@ const App = () => {
         updatedForm = API.AddDependency(formData, data.DEPENDENCY_NAME);
         break;
       case "remove_dependency":
-        updatedForm = API.RemoveDependency(formData, data.DEPENDENCY_ID);
+        updatedForm = API.RemoveDependency(
+          formData,
+          data.DEPENDENCY_ID,
+          data.DEPENDENCY_NAME
+        );
         break;
       case "new_route":
         updatedForm = API.CreateRoute(formData);

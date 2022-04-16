@@ -1,27 +1,23 @@
 import tw from "tailwind-styled-components";
-import { FcFolder } from "react-icons/fc";
-import { FaFileCode } from "react-icons/fa";
 
-const StyledMain = tw.div`
-  col-span-3
-  max-h-full
-  overflow-y-scroll
-  border-t-2
-  border-r-2
-border-black
-  p-1
-`;
+import File from "./file";
+import { FcFolder } from "react-icons/fc";
+
+const StyledMain = tw.div`col-span-3 max-h-full overflow-y-scroll border-t-2 border-r-2 border-black p-1`;
 
 const StyledRootFolder = tw.div`text-xl`;
 const StyledFolderLabel = tw.label`flex items-center`;
-const StyledFileLabel = tw(StyledFolderLabel)`pl-10`;
-const StyledRootFile = tw(StyledFolderLabel)`pl-5`;
 
-const StyledMiddlewareFolder = tw.div`pl-5`;
-const StyledRoutesFolder = tw.div`pl-5`;
-const StyledRepositoryFolder = tw.div`pl-5`;
+const StyledMiddlewareFolder = tw.div`flex flex-col`;
+const StyledMiddlewareFiles = tw.div`pl-10`;
 
-const OutputFileView = () => {
+const StyledRoutesFolder = tw.div``;
+const StyledRoutesFiles = tw.div`pl-10`;
+
+const StyledRepositoryFolder = tw.div``;
+const StyledRepositoryFiles = tw.div`pl-10`;
+
+const OutputFileView = ({ dir, setSelectedFile }) => {
   return (
     <StyledMain>
       <StyledRootFolder>
@@ -30,79 +26,37 @@ const OutputFileView = () => {
             <FcFolder />
             middleware
           </StyledFolderLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.validation.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.test.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.validation.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.test.js
-          </StyledFileLabel>
+          <StyledMiddlewareFiles>
+            {dir.middleware.map((item) => (
+              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+            ))}
+          </StyledMiddlewareFiles>
         </StyledMiddlewareFolder>
         <StyledRoutesFolder>
           <StyledFolderLabel>
             <FcFolder />
             routes
           </StyledFolderLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.route.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.test.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.route.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.test.js
-          </StyledFileLabel>
+          <StyledRoutesFiles>
+            {dir.routes.map((item) => (
+              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+            ))}
+          </StyledRoutesFiles>
         </StyledRoutesFolder>
         <StyledRepositoryFolder>
           <StyledFolderLabel>
             <FcFolder />
             repositories
           </StyledFolderLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.repository.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            users.test.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.repository.js
-          </StyledFileLabel>
-          <StyledFileLabel>
-            <FaFileCode />
-            products.test.js
-          </StyledFileLabel>
+          <StyledRepositoryFiles>
+            {dir.repositories.map((item) => (
+              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+            ))}
+          </StyledRepositoryFiles>
         </StyledRepositoryFolder>
-        <StyledRootFile>
-          <FaFileCode />
-          app.js
-        </StyledRootFile>
-        <StyledRootFile>
-          <FaFileCode />
-          server.js
-        </StyledRootFile>
-        <StyledRootFile>
-          <FaFileCode />
-          package.json
-        </StyledRootFile>
+        {dir.defaults.map((item) => (
+          <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+        ))}
       </StyledRootFolder>
     </StyledMain>
   );
