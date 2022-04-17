@@ -1,19 +1,22 @@
 import CheckDependencyExists from "./checkDependencyExists";
 
-const AddDependency = (formData, newValue) => {
-  if (newValue === "" || CheckDependencyExists(formData.dependencies, newValue))
+const AddDependency = (formData, dependencyName, dependencyVersion) => {
+  if (
+    dependencyName === "" ||
+    CheckDependencyExists(formData.dependencies, dependencyName)
+  )
     return formData;
 
   let newFormData = { ...formData };
 
   newFormData.dependencies = [
     ...formData.dependencies,
-    { name: newValue, id: `dep_${formData.dependencies.length}` },
+    {
+      name: dependencyName,
+      version: dependencyVersion,
+      id: `dep_${formData.dependencies.length}`,
+    },
   ];
-
-  let oldContents = newFormData.dir.defaults[2].contents;
-  oldContents.dependencies = { ...oldContents.dependencies, [newValue]: "" };
-  newFormData.dir.defaults[2].contents = oldContents;
 
   return newFormData;
 };

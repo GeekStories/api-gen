@@ -8,14 +8,15 @@ import UpdateRouteName from "./utils/updateRouteName";
 import CreateMethod from "./utils/createMethod";
 import RemoveMethod from "./utils/removeMethod";
 import UpdateMethodType from "./utils/updateMethodType";
+import UpdateMethodRequestBody from "./utils/updateMethodRequestBody";
 
 import CreateQuery from "./utils/createQuery";
 import CreateParam from "./utils/createParam";
 import RemoveParam from "./utils/removeParam";
 
 const API = {
-  AddDependency: (formData, dependencyName) => {
-    return AddDependency(formData, dependencyName);
+  AddDependency: (formData, dependencyName, dependencyVersion) => {
+    return AddDependency(formData, dependencyName, dependencyVersion);
   },
   RemoveDependency: (formData, dependencyId, dependencyName) => {
     return RemoveDependency(formData, dependencyId, dependencyName);
@@ -46,6 +47,9 @@ const API = {
   },
   CreateQuery: (formData, routeId, methodId, newQuery) => {
     return CreateQuery(formData, routeId, methodId, newQuery);
+  },
+  UpdateMethodRequestBody: (formData, routeId, methodId, newValue) => {
+    return UpdateMethodRequestBody(formData, routeId, methodId, newValue);
   },
 };
 

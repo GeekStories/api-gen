@@ -18,22 +18,9 @@ const CreateMethod = (formData, routeId) => {
   newFormData.routes[routeIndex].methods.push({
     id: `met_${routeIndex}_${formData.routes[routeIndex].methods.length}`,
     type: difference[0],
-    statuses: [
-      {
-        id: `stat_${routeIndex}_0`,
-        value: 200,
-        message: "OK",
-      },
-      {
-        id: `stat_${routeIndex}_1`,
-        value: 500,
-        message: "Error",
-      },
-    ],
     params: [],
     queries: [],
-    body: {},
-    response: "",
+    body: null,
   });
 
   return newFormData;

@@ -1,17 +1,23 @@
 import tw from "tailwind-styled-components";
-import { useState } from "react";
 
 import OutputFileView from "./outputFileView";
 import SelectedFileView from "./selectedFileView";
 
 const StyledMain = tw.div`grid grid-cols-12 gap-1 rounded-sm`;
 
-const Output = ({ formData }) => {
-  const [selectedFile, setSelectedFile] = useState({});
-
+const Output = ({
+  formData,
+  handleGenerateFiles,
+  selectedFile,
+  setSelectedFile,
+}) => {
   return (
     <StyledMain>
-      <OutputFileView dir={formData.dir} setSelectedFile={setSelectedFile} />
+      <OutputFileView
+        dir={formData.dir}
+        setSelectedFile={setSelectedFile}
+        handleGenerateFiles={handleGenerateFiles}
+      />
       <SelectedFileView selectedFile={selectedFile} />
     </StyledMain>
   );

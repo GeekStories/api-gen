@@ -9,10 +9,29 @@ const RemoveRoute = (formData, routeId) => {
     return formData;
   }
 
-  return {
+  let newFormData = {
     ...formData,
     routes: formData.routes.filter((route) => route.id !== routeId),
   };
+
+  const routeIndex = formData.routes.findIndex((route) => route.id === routeId);
+
+  // Remove file from routes
+  newFormData.dir.routes = newFormData.dir.routes.filter(
+    (route) => route.id !== `route_file_${routeIndex}`
+  );
+
+  // Remove file from middleware
+  newFormData.dir.middleware = newFormData.dir.middleware.filter(
+    (m) => m.id !== `middleware_file_${routeIndex}`
+  );
+
+  // Remove file from repositories
+  newFormData.dir.repositories = newFormData.dir.repositories.filter(
+    (repo) => repo.id !== `repository_file_${routeIndex}`
+  );
+
+  return newFormData;
 };
 
 export default RemoveRoute;

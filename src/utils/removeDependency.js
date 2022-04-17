@@ -17,10 +17,6 @@ const RemoveDependency = (formData, id, dependencyName) => {
     ),
   };
 
-  let oldContents = newFormData.dir.defaults[2].contents;
-  delete oldContents.dependencies[dependencyName];
-  newFormData.dir.defaults[2].contents = oldContents;
-
   return newFormData;
 };
 

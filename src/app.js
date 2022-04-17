@@ -7,26 +7,31 @@ import RoutesList from "./components/input/routesList";
 import Output from "./components/output/output";
 import { useState } from "react";
 
-import defaultPackageJson from "./defaultPackageJson";
+import GenerateFilesContents from "./utils/generateFiles";
+import defaultPackage from "./defaults/package";
+import defaultApp from "./defaults/app";
+import defaultServer from "./defaults/server";
 
 const StyledMain = tw.div`h-screen grid grid-rows-2 gap-1`;
 const StyledUserInputArea = tw.div`grid grid-cols-12 gap-1`;
 
 const defaultFormData = {
   dependencies: [
-    { name: "express", id: "dep_0" },
-    { name: "cors", id: "dep_1" },
+    { name: "express", version: "4.17.3", id: "dep_0" },
+    { name: "cors", version: "2.8.5", id: "dep_1" },
+    { name: "nodemon", version: "2.0.15", id: "dep_2" },
+    { name: "celebrate", version: "15.0.1", id: "dep_3" },
   ],
   routes: [],
   dir: {
     defaults: [
-      { id: "root_file_0", name: "app", ext: "js", contents: "" },
-      { id: "root_file_1", name: "server", ext: "js", contents: "" },
+      { id: "root_file_0", name: "app", ext: "js", contents: defaultApp },
+      { id: "root_file_1", name: "server", ext: "js", contents: defaultServer },
       {
         id: "root_file_2",
         name: "package",
         ext: "json",
-        contents: defaultPackageJson,
+        contents: defaultPackage,
       },
     ],
     middleware: [],
@@ -39,6 +44,7 @@ const App = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
+  const [selectedFile, setSelectedFile] = useState({});
 
   const handleSelectRoute = (id) => {
     setSelectedRoute(formData.routes.find((route) => route.id === id));
@@ -57,7 +63,11 @@ const App = () => {
 
     switch (data.UPDATE_TYPE) {
       case "new_dependency":
-        updatedForm = API.AddDependency(formData, data.DEPENDENCY_NAME);
+        updatedForm = API.AddDependency(
+          formData,
+          data.DEPENDENCY_NAME,
+          data.DEPENDENCY_VERSION
+        );
         break;
       case "remove_dependency":
         updatedForm = API.RemoveDependency(
@@ -100,6 +110,14 @@ const App = () => {
         if (result.message === "fail") return result.message;
 
         break;
+      case "change_method_body":
+        updatedForm = API.UpdateMethodRequestBody(
+          formData,
+          data.ROUTE_ID,
+          data.METHOD_ID,
+          data.VALUE
+        );
+        break;
       case "new_param":
         updatedForm = API.CreateParam(
           formData,
@@ -133,6 +151,12 @@ const App = () => {
     setFormData(updatedForm);
   };
 
+  const handleGenerateFiles = () => {
+    const newDir = GenerateFilesContents(formData);
+    setFormData({ ...formData, dir: newDir });
+    setSelectedFile({}); // Reset selectedFile
+  };
+
   return (
     <StyledMain>
       <StyledUserInputArea>
@@ -152,7 +176,13 @@ const App = () => {
           UpdateForm={UpdateForm}
         />
       </StyledUserInputArea>
-      <Output formData={formData} />
+
+      <Output
+        formData={formData}
+        handleGenerateFiles={handleGenerateFiles}
+        selectedFile={selectedFile}
+        setSelectedFile={setSelectedFile}
+      />
     </StyledMain>
   );
 };

@@ -8,56 +8,67 @@ const StyledMain = tw.div`col-span-3 max-h-full overflow-y-scroll border-t-2 bor
 const StyledRootFolder = tw.div`text-xl`;
 const StyledFolderLabel = tw.label`flex items-center`;
 
-const StyledMiddlewareFolder = tw.div`flex flex-col`;
-const StyledMiddlewareFiles = tw.div`pl-10`;
+const StyledFolder = tw.div`flex flex-col`;
+const StyledFiles = tw.div`pl-10`;
 
-const StyledRoutesFolder = tw.div``;
-const StyledRoutesFiles = tw.div`pl-10`;
+const StyledGenerateContentButton = tw.button`border-2 border-gray-400 rounded px-3 py-1`;
 
-const StyledRepositoryFolder = tw.div``;
-const StyledRepositoryFiles = tw.div`pl-10`;
-
-const OutputFileView = ({ dir, setSelectedFile }) => {
+const OutputFileView = ({ dir, setSelectedFile, handleGenerateFiles }) => {
   return (
     <StyledMain>
       <StyledRootFolder>
-        <StyledMiddlewareFolder>
+        <StyledFolder>
           <StyledFolderLabel>
             <FcFolder />
             middleware
           </StyledFolderLabel>
-          <StyledMiddlewareFiles>
+          <StyledFiles>
             {dir.middleware.map((item) => (
-              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+              <File
+                key={item.id}
+                file={item}
+                setSelectedFile={setSelectedFile}
+              />
             ))}
-          </StyledMiddlewareFiles>
-        </StyledMiddlewareFolder>
-        <StyledRoutesFolder>
+          </StyledFiles>
+        </StyledFolder>
+        <StyledFolder>
           <StyledFolderLabel>
             <FcFolder />
             routes
           </StyledFolderLabel>
-          <StyledRoutesFiles>
+          <StyledFiles>
             {dir.routes.map((item) => (
-              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+              <File
+                key={item.id}
+                file={item}
+                setSelectedFile={setSelectedFile}
+              />
             ))}
-          </StyledRoutesFiles>
-        </StyledRoutesFolder>
-        <StyledRepositoryFolder>
+          </StyledFiles>
+        </StyledFolder>
+        <StyledFolder>
           <StyledFolderLabel>
             <FcFolder />
             repositories
           </StyledFolderLabel>
-          <StyledRepositoryFiles>
+          <StyledFiles>
             {dir.repositories.map((item) => (
-              <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+              <File
+                key={item.id}
+                file={item}
+                setSelectedFile={setSelectedFile}
+              />
             ))}
-          </StyledRepositoryFiles>
-        </StyledRepositoryFolder>
+          </StyledFiles>
+        </StyledFolder>
         {dir.defaults.map((item) => (
           <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
         ))}
       </StyledRootFolder>
+      <StyledGenerateContentButton onClick={handleGenerateFiles}>
+        Generate File Contents
+      </StyledGenerateContentButton>
     </StyledMain>
   );
 };

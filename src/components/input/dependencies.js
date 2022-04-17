@@ -12,14 +12,21 @@ const StyledDeleteButton = tw.button`border-2 px-3`;
 
 const Dependencies = ({ dependencies, UpdateForm }) => {
   const [dependencyInput, setDependencyInput] = useState("");
+  const [versionInput, setVersionInput] = useState("");
 
   const handleAddDependency = () => {
     UpdateForm({
       UPDATE_TYPE: "new_dependency",
       DEPENDENCY_NAME: dependencyInput,
+      DEPENDENCY_VERSION: versionInput,
     });
 
     setDependencyInput("");
+  };
+
+  const handleChangeVersion = (e) => {
+    const invalidChars = e.target.value.match(/[^0-9.]/gi);
+    if (!invalidChars) setVersionInput(e.target.value);
   };
 
   return (
@@ -32,13 +39,19 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
           value={dependencyInput}
           onChange={(e) => setDependencyInput(e.target.value)}
         />
+        <StyledInput
+          type="text"
+          placeholder="2.0.1"
+          value={versionInput}
+          onChange={handleChangeVersion}
+        />
         <StyledAddButton onClick={handleAddDependency}>Add</StyledAddButton>
       </StyledInputWrapper>
       <StyledListWrapper>
         {dependencies.map((dependency) => {
           return (
             <StyledListItem key={dependency.id}>
-              {dependency.name}
+              {dependency.name}@{dependency.version}
               <StyledDeleteButton
                 onClick={() =>
                   UpdateForm({
