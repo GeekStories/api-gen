@@ -13,6 +13,10 @@ const GenerateFilesContents = (formData) => {
     route.contents = GenerateRouteFile(routes[index]);
   });
 
+  newDir.middleware.forEach((route, index) => {
+    route.contents = GenerateMiddlewareFile(routes[index]);
+  });
+
   return newDir;
 };
 
@@ -69,7 +73,6 @@ const GenerateAppContents = (routes) => {
     const express = require("express");
     const app = express();
 
-    /* Import Routes */
     ${routes
       .map(
         (route) =>
@@ -104,6 +107,54 @@ const GeneratePackageContents = (dependencies) => {
       .join("\n")}
     },
   }`;
+};
+
+const GenerateMiddlewareFile = (route) => {
+  const GenerateParams = (params, type) => {
+    return `[Segments.${type}]: Joi.object().keys({
+      ${params.map(
+        (param) =>
+          `${param.name}: Joi.${param.type}()${param.options
+            .map(
+              (option) =>
+                `.${option.key}(${
+                  typeof option.value === "boolean" ? "" : option.value
+                })`
+            )
+            .join("")}`
+      )}
+    })`;
+  };
+
+  return `
+    const { 
+      celebrate,
+      Joi, 
+      Segments 
+    } = require("celebrate");
+
+    const ${route.name}Validation = {
+      ${route.methods.map((method) => {
+        const params =
+          method.params.length > 0
+            ? GenerateParams(method.params, "PARAMS")
+            : "";
+        const queries =
+          method.queries.length > 0
+            ? GenerateParams(method.queries, "QUERIES")
+            : "";
+
+        return params || queries
+          ? `${method.type.toUpperCase()}: {
+          ${params}
+          ${queries}
+        }`
+          : "";
+      })}
+    }
+
+    export default ${route.name}Validation;
+  `;
 };
 
 export default GenerateFilesContents;

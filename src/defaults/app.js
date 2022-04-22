@@ -10,9 +10,7 @@ const app = `
     app.use(cors());
     app.use(express.json());
 
-
     /* Routes will be generated here */
-
 
     module.exports = app;
     `;

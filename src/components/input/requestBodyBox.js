@@ -5,7 +5,13 @@ import { useState, useEffect } from "react";
 
 const StyledBodyWrapper = tw.div`p-1 my-1`;
 const StyledOptionLabel = tw.p`font-medium underline underline-offset-1`;
+
 const defaultFormatOptions = { indent_size: 2, space_in_empty_paren: true };
+const placeHolderBody = JSON.stringify(
+  { name: "string", email: "email", mobile: "number" },
+  null,
+  "\t"
+);
 
 const MethodBodyBox = ({ selectedMethodBody, handleChangeMethodBody }) => {
   const [body, setBody] = useState(selectedMethodBody);
@@ -19,6 +25,7 @@ const MethodBodyBox = ({ selectedMethodBody, handleChangeMethodBody }) => {
       <StyledOptionLabel>Request Body</StyledOptionLabel>
       <CodeEditor
         value={body}
+        placeholder={`example: { key: "type" } \n${placeHolderBody}`}
         language="webmanifest"
         onChange={(e) => handleChangeMethodBody(e.target.value)}
         style={{

@@ -1,3 +1,5 @@
+import CheckValidJSON from "./checkValidJSON";
+
 const UpdateMethodRequestBody = (formData, routeId, methodId, newValue) => {
   let newFormData = { ...formData };
 
@@ -9,8 +11,9 @@ const UpdateMethodRequestBody = (formData, routeId, methodId, newValue) => {
   if (newValue === "") {
     newFormData.routes[routeIndex].methods[methodIndex].body = null;
   } else {
-    newFormData.routes[routeIndex].methods[methodIndex].body =
-      JSON.parse(newValue);
+    const validJSON = CheckValidJSON(newValue);
+    if (validJSON === false) return formData;
+    newFormData.routes[routeIndex].methods[methodIndex].body = validJSON;
   }
 
   return newFormData;
