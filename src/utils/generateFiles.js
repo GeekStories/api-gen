@@ -144,9 +144,9 @@ const GenerateMiddlewareFile = (route) => {
             ? GenerateParams(method.queries, "QUERIES")
             : "";
 
-        return params || queries
+        return params !== "" || queries !== ""
           ? `${method.type.toUpperCase()}: {
-          ${params}
+          ${params},
           ${queries}
         }`
           : "";
