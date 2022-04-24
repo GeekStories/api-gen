@@ -1,29 +1,18 @@
 import tw from "tailwind-styled-components";
 import { useState, useEffect } from "react";
 
-const StyledSearchModal = tw.div`
-${(p) => (p.$state ? "grid" : "hidden")}
-border-2
-bg-gray-300
-gap-1
-fixed
-top-[5rem]
-z-10
-h-56
-overflow-y-scroll
-w-[20rem]
-p-1`;
-
-const StyledMain = tw.div`col-span-2 flex flex-col border-r-2 border-b-2 border-black text-center p-1`;
-const StyledDependencySearchResult = tw.div`border-2 p-1`;
-const StyledAddDependencyButton = tw.button`border-2 px-2`;
-const StyledListTitle = tw.h1`text-lg font-medium underline`;
-const StyledInputWrapper = tw.div`border-2 p-1`;
-const StyledInput = tw.input`border-2 p-1 text-lg w-full`;
-const StyledClearInputButton = tw.button`fixed top-[2.8rem] left-[15.8rem] z-10 border-2 px-4`;
-const StyledListWrapper = tw.ol`h-full p-1`;
-const StyledListItem = tw.li`flex justify-between border-2 p-1 my-1`;
-const StyledDeleteButton = tw.button`border-2 px-3`;
+const SearchModal = tw.div`${(p) => (p.$state ? "grid" : "hidden")} 
+  border-2 bg-gray-300 gap-1 fixed top-[5rem] z-10 h-56 overflow-y-scroll w-[20rem] p-1`;
+const Main = tw.div`col-span-2 flex flex-col border-r-2 border-b-2 border-black text-center p-1`;
+const DependencySearchResult = tw.p`text-lg text-center hover:cursor-pointer hover:underline`;
+const ListTitle = tw.h1`text-lg font-medium underline`;
+const InputWrapper = tw.div`grid grid-cols-12 p-2`;
+const DependencyInput = tw.input`col-span-11 border-b-2 bg-gray-100 rounded-bl-lg border-gray-300 p-1 text-lg focus:outline-none`;
+const ClearInput = tw.button`col-span-1 text-lg text-gray-400 border-b-2 border-l-transparent border-gray-300 rounded-r-lg bg-gray-100 pr-1 hover:border-l-[1px] active:bg-gray-200 active:text-gray-500`;
+const ListWrapper = tw.ol`h-full p-1`;
+const ListItem = tw.li`grid grid-cols-12 border-2 p-1 my-1`;
+const DependencyLabel = tw.p`col-span-11 text-lg`;
+const RemoveDependencyButton = tw.button`col-span-1 border-2 rounded text-sm`;
 
 const Dependencies = ({ dependencies, UpdateForm }) => {
   const [dependencyInput, setDependencyInput] = useState("");
@@ -64,40 +53,37 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
 
   return (
     <>
-      <StyledSearchModal $state={searchResultsOpen}>
+      <SearchModal $state={searchResultsOpen}>
         {searchResults.map((item, index) => (
-          <StyledDependencySearchResult key={index}>
-            {item.package.name} - {item.package.version} |{" "}
-            <StyledAddDependencyButton
-              onClick={(e) =>
-                handleAddDependency(item.package.name, item.package.version)
-              }
-            >
-              Add
-            </StyledAddDependencyButton>
-          </StyledDependencySearchResult>
+          <DependencySearchResult
+            key={index}
+            onClick={() =>
+              handleAddDependency(item.package.name, item.package.version)
+            }
+          >
+            {item.package.name} - {item.package.version}
+          </DependencySearchResult>
         ))}
-      </StyledSearchModal>
-      <StyledMain>
-        <StyledListTitle>Dependencies</StyledListTitle>
-        <StyledInputWrapper>
-          <StyledInput
+      </SearchModal>
+      <Main>
+        <ListTitle>Dependencies</ListTitle>
+        <InputWrapper>
+          <DependencyInput
             type="text"
             placeholder="axios"
             value={dependencyInput}
             onChange={(e) => handleSearchDependency(e)}
           />
-          <StyledClearInputButton onClick={() => setDependencyInput("")}>
-            X
-          </StyledClearInputButton>
-        </StyledInputWrapper>
-
-        <StyledListWrapper>
+          <ClearInput onClick={() => setDependencyInput("")}>X</ClearInput>
+        </InputWrapper>
+        <ListWrapper>
           {dependencies.map((dependency) => {
             return (
-              <StyledListItem key={dependency.id}>
-                {dependency.name}@{dependency.version}
-                <StyledDeleteButton
+              <ListItem key={dependency.id}>
+                <DependencyLabel>
+                  {dependency.name}@{dependency.version}
+                </DependencyLabel>
+                <RemoveDependencyButton
                   onClick={() =>
                     UpdateForm({
                       UPDATE_TYPE: "remove_dependency",
@@ -107,12 +93,12 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
                   }
                 >
                   X
-                </StyledDeleteButton>
-              </StyledListItem>
+                </RemoveDependencyButton>
+              </ListItem>
             );
           })}
-        </StyledListWrapper>
-      </StyledMain>
+        </ListWrapper>
+      </Main>
     </>
   );
 };

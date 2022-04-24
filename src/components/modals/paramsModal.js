@@ -5,7 +5,7 @@ import ValidationOptions from "../../utils/validationOptions";
 import StringValidationOptions from "../validation/stringValidationOptions";
 import NumberValidationOptions from "../validation/numberValidationOptions";
 
-const StyledNewParamModal = tw.div`
+const NewParamModal = tw.div`
   ${(p) => (p.$state ? "grid" : "hidden")}
   border-2
   rounded-lg
@@ -21,12 +21,12 @@ const StyledNewParamModal = tw.div`
   p-2
 `;
 
-const StyledInput = tw.input`h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg font-mono`;
-const StyledTypeSelect = tw.select`h-8 pl-2 rounded border-2 border-gray-300 bg-gray-100 shadow-inner text-lg font-mono`;
-const StyledModalInputsWrapper = tw.div`grid grid-cols-2 gap-1 text-center`;
-const StyledModalControlsWrapper = tw.div`grid grid-cols-2 gap-1`;
-const StyledModalControl = tw.button`rounded border-2 border-gray-300 text-lg`;
-const StyledRoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
+const Input = tw.input`h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg font-mono`;
+const TypeSelect = tw.select`h-8 pl-2 rounded border-2 border-gray-300 bg-gray-100 shadow-inner text-lg font-mono`;
+const ModalInputsWrapper = tw.div`grid grid-cols-2 gap-1 text-center`;
+const ModalControlsWrapper = tw.div`grid grid-cols-2 gap-1`;
+const ModalControl = tw.button`rounded border-2 border-gray-300 text-lg`;
+const RoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
 
 const ParamsModal = ({
   isOpen,
@@ -456,22 +456,22 @@ const ParamsModal = ({
   }, [modalType, paramName, routeName, selectedType]);
 
   return (
-    <StyledNewParamModal $state={isOpen}>
-      <StyledRoutePreview>{newRouteName}</StyledRoutePreview>
+    <NewParamModal $state={isOpen}>
+      <RoutePreview>{newRouteName}</RoutePreview>
 
-      <StyledModalInputsWrapper>
-        <StyledInput
+      <ModalInputsWrapper>
+        <Input
           type="text"
           placeholder="example"
           value={paramName}
           onChange={handleUpdateName}
         />
 
-        <StyledTypeSelect defaultValue={"string"} onChange={handleChangeType}>
+        <TypeSelect defaultValue={"string"} onChange={handleChangeType}>
           <option value="string">string</option>
           <option value="number">number</option>
-        </StyledTypeSelect>
-      </StyledModalInputsWrapper>
+        </TypeSelect>
+      </ModalInputsWrapper>
 
       {selectedType === "string" && (
         <StringValidationOptions
@@ -513,15 +513,11 @@ const ParamsModal = ({
         />
       )}
 
-      <StyledModalControlsWrapper>
-        <StyledModalControl onClick={handleCreateParam}>
-          Create
-        </StyledModalControl>
-        <StyledModalControl onClick={handleCloseModal}>
-          Cancel
-        </StyledModalControl>
-      </StyledModalControlsWrapper>
-    </StyledNewParamModal>
+      <ModalControlsWrapper>
+        <ModalControl onClick={handleCreateParam}>Create</ModalControl>
+        <ModalControl onClick={handleCloseModal}>Cancel</ModalControl>
+      </ModalControlsWrapper>
+    </NewParamModal>
   );
 };
 

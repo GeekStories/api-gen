@@ -155,7 +155,7 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
         />
 
         <RequestBodyBox
-          body={selectedMethod.body}
+          selectedMethodBody={selectedMethod.body}
           handleChangeMethodBody={handleChangeMethodBody}
         />
       </StyledRouteOptionWrapper>

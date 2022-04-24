@@ -13,7 +13,7 @@ const UpdateMethodRequestBody = (formData, routeId, methodId, newValue) => {
   } else {
     const validJSON = CheckValidJSON(newValue);
     if (validJSON === false) return formData;
-    newFormData.routes[routeIndex].methods[methodIndex].body = validJSON;
+    newFormData.routes[routeIndex].methods[methodIndex].body = newValue;
   }
 
   return newFormData;

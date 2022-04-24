@@ -1,19 +1,20 @@
 import tw from "tailwind-styled-components";
+import { useState } from "react";
 import API from "./API";
 
 import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
 import RoutesList from "./components/input/routesList";
 import Output from "./components/output/output";
-import { useState } from "react";
-
 import GenerateFilesContents from "./utils/generateFiles";
 import defaultPackage from "./defaults/package";
 import defaultApp from "./defaults/app";
 import defaultServer from "./defaults/server";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
 
-const StyledMain = tw.div`h-screen grid grid-rows-2 gap-1`;
-const StyledUserInputArea = tw.div`grid grid-cols-12 gap-1`;
+const Main = tw.div`h-screen grid grid-rows-2 gap-1`;
+const UserInputArea = tw.div`grid grid-cols-12 gap-1`;
 
 const defaultFormData = {
   dependencies: [
@@ -48,9 +49,12 @@ const App = () => {
 
   const handleSelectRoute = (id) => {
     setSelectedRoute(formData.routes.find((route) => route.id === id));
+    setSelectedMethod({});
   };
 
   const handleSelectMethod = (methodId, routeId) => {
+    handleSelectRoute(routeId);
+
     setSelectedMethod(
       formData.routes
         .find((route) => route.id === routeId)
@@ -157,9 +161,39 @@ const App = () => {
     setSelectedFile({}); // Reset selectedFile
   };
 
+  const handleDownloadFiles = async () => {
+    const zip = new JSZip();
+
+    // Default Files
+    formData.dir.defaults.forEach((file) =>
+      zip.file(`${file.name}.${file.ext}`, file.contents)
+    );
+
+    // Middleware Files
+    const middlewareFolder = zip.folder("middleware");
+    formData.dir.middleware.forEach((file) =>
+      middlewareFolder.file(`${file.name}.${file.ext}`, file.contents)
+    );
+
+    // Routes Files
+    const routesFolder = zip.folder("routes");
+    formData.dir.routes.forEach((file) =>
+      routesFolder.file(`${file.name}.${file.ext}`, file.contents)
+    );
+
+    // Repositories Files
+    const repositoriesFolder = zip.folder("repositories");
+    formData.dir.repositories.forEach((file) =>
+      repositoriesFolder.file(`${file.name}.${file.ext}`, file.contents)
+    );
+
+    const result = await zip.generateAsync({ type: "blob" });
+    saveAs(result, "project.zip");
+  };
+
   return (
-    <StyledMain>
-      <StyledUserInputArea>
+    <Main>
+      <UserInputArea>
         <Dependencies
           dependencies={formData.dependencies}
           UpdateForm={UpdateForm}
@@ -175,15 +209,16 @@ const App = () => {
           selectedMethod={selectedMethod}
           UpdateForm={UpdateForm}
         />
-      </StyledUserInputArea>
+      </UserInputArea>
 
       <Output
         formData={formData}
         handleGenerateFiles={handleGenerateFiles}
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
+        handleDownloadFiles={handleDownloadFiles}
       />
-    </StyledMain>
+    </Main>
   );
 };
 

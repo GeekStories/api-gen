@@ -1,7 +1,7 @@
 import { useState } from "react";
 import tw from "tailwind-styled-components";
 
-const StyledRouteMethodSelector = tw.select`col-span-1 text-sm border-2`;
+const RouteMethodSelector = tw.select`col-span-1 text-sm border-2`;
 
 const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 
@@ -21,7 +21,7 @@ const MethodSelector = ({ UpdateForm, routeId, methodId, currentMethod }) => {
   };
 
   return (
-    <StyledRouteMethodSelector
+    <RouteMethodSelector
       value={routeMethod}
       onChange={(e) => handleChangeMethod(e, routeId, methodId)}
     >
@@ -30,7 +30,7 @@ const MethodSelector = ({ UpdateForm, routeId, methodId, currentMethod }) => {
           {item}
         </option>
       ))}
-    </StyledRouteMethodSelector>
+    </RouteMethodSelector>
   );
 };
 

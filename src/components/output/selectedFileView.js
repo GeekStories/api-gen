@@ -25,7 +25,7 @@ const SelectedFileView = ({ selectedFile }) => {
             "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
           backgroundColor: "#f5f5f5",
           boxShadow: "inset 0px 0px 15px -6px rgba(0,0,0,0.5)",
-          borderRadius: "7px"
+          borderRadius: "7px",
         }}
       />
     </StyledMain>

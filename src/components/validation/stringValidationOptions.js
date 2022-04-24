@@ -1,11 +1,11 @@
 import tw from "tailwind-styled-components";
 
-const StyledMain = tw.div`grid grid-rows-2 w-[65%] mx-auto`;
-const StyledInputGroup1 = tw.div`grid grid-cols-2 gap-4`;
-const StyledInputGroup2 = tw.div`flex gap-4 m-auto`;
-const StyledInputGroupItem = tw.div`grid grid-cols-2 my-1`;
-const StyledCheckboxWrapper = tw.div`col-span-2 flex gap-2 my-auto font-mono text-sm`;
-const StyledInput = tw.input`col-span-4 h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg`;
+const Main = tw.div`grid grid-rows-2 w-[65%] mx-auto`;
+const InputGroup1 = tw.div`grid grid-cols-2 gap-4`;
+const InputGroup2 = tw.div`flex gap-4 m-auto`;
+const InputGroupItem = tw.div`grid grid-cols-2 my-1`;
+const CheckboxWrapper = tw.div`col-span-2 flex gap-2 my-auto font-mono text-sm`;
+const Input = tw.input`col-span-4 h-8 pl-2 rounded border-2 bg-gray-300 shadow-inner text-lg`;
 
 const StringValidationOptions = ({
   isMaxLengthEnabled,
@@ -21,10 +21,10 @@ const StringValidationOptions = ({
   handleStringCheckBox,
 }) => {
   return (
-    <StyledMain>
-      <StyledInputGroup1>
-        <StyledInputGroupItem>
-          <StyledCheckboxWrapper>
+    <Main>
+      <InputGroup1>
+        <InputGroupItem>
+          <CheckboxWrapper>
             <label htmlFor="maxLength">Max. Length</label>
             <input
               type="checkbox"
@@ -33,19 +33,19 @@ const StringValidationOptions = ({
               checked={isMaxLengthEnabled}
               onChange={handleSwitchMaxLength}
             />{" "}
-          </StyledCheckboxWrapper>
+          </CheckboxWrapper>
 
-          <StyledInput
+          <Input
             type="number"
             id="maxLength"
             value={maxLength}
             disabled={!isMaxLengthEnabled}
             onChange={handleChangeMaxLength}
           />
-        </StyledInputGroupItem>
+        </InputGroupItem>
 
-        <StyledInputGroupItem>
-          <StyledCheckboxWrapper>
+        <InputGroupItem>
+          <CheckboxWrapper>
             <label htmlFor="minLength">Min. Length</label>
             <input
               type="checkbox"
@@ -54,19 +54,19 @@ const StringValidationOptions = ({
               checked={isMinLengthEnabled}
               onChange={handleSwitchMinLength}
             />{" "}
-          </StyledCheckboxWrapper>
-          <StyledInput
+          </CheckboxWrapper>
+          <Input
             type="number"
             id="minLength"
             value={minLength}
             disabled={!isMinLengthEnabled}
             onChange={handleChangeMinLength}
           />
-        </StyledInputGroupItem>
-      </StyledInputGroup1>
+        </InputGroupItem>
+      </InputGroup1>
 
-      <StyledInputGroup2>
-        <StyledCheckboxWrapper>
+      <InputGroup2>
+        <CheckboxWrapper>
           <input
             type="checkbox"
             id="alphanum"
@@ -75,9 +75,9 @@ const StringValidationOptions = ({
             onChange={() => handleStringCheckBox("alphanum")}
           />{" "}
           <label htmlFor="alphanum">alpha num.</label>
-        </StyledCheckboxWrapper>
+        </CheckboxWrapper>
 
-        <StyledCheckboxWrapper>
+        <CheckboxWrapper>
           <input
             type="checkbox"
             id="required"
@@ -86,9 +86,9 @@ const StringValidationOptions = ({
             onChange={() => handleStringCheckBox("required")}
           />{" "}
           <label htmlFor="required">required</label>
-        </StyledCheckboxWrapper>
-      </StyledInputGroup2>
-    </StyledMain>
+        </CheckboxWrapper>
+      </InputGroup2>
+    </Main>
   );
 };
 

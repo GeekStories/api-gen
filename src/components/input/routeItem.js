@@ -1,10 +1,12 @@
 import tw from "tailwind-styled-components";
 import MethodSelector from "./methodSelector";
 
-const StyledRoutesListItem = tw.li`flex flex-col gap-2 text-lg font-mono border-b-4 mb-4 p-1 &:hover { cursor-pointer }`;
-const StyledRouteItem = tw.div`grid grid-cols-3 gap-1 border-b-2 p-1`;
-const StyledButton = tw.button`border-2 text-sm`;
-const StyledRoutePathLabel = tw.div`font-mono`;
+const RoutesListItem = tw.li`flex flex-col gap-1 text-lg font-mono border-b-2 border-gray-300 py-1 &:hover { cursor-pointer }`;
+const Button = tw.button`border-2 transition-all ease-in-out delay-100 hover:bg-gray-300 hover:border-gray-400`;
+const RouteInfoWrapper = tw.div`grid grid-cols-12`;
+const RoutePathLabel = tw.div`col-span-7 font-mono hover:cursor-pointer`;
+const NewMethodButton = tw(Button)`col-span-5 border-2 text-[16px]`;
+const RouteControls = tw.div`grid grid-cols-3 gap-1`;
 
 const RouteItem = ({
   route,
@@ -12,19 +14,31 @@ const RouteItem = ({
   handleSelectRoute,
   handleSelectMethod,
 }) => {
-  const handleRemoveMethod = (methodId) => {
+  const handleRemoveMethod = (methodId, routeId) => {
     UpdateForm({
       UPDATE_TYPE: "remove_method",
-      ROUTE_ID: route.id,
+      ROUTE_ID: routeId,
       METHOD_ID: methodId,
     });
   };
 
   return (
-    <StyledRoutesListItem onClick={() => handleSelectRoute(route.id)}>
-      <StyledRoutePathLabel>{`/${route.name}`}</StyledRoutePathLabel>
+    <RoutesListItem>
+      <RouteInfoWrapper>
+        <RoutePathLabel
+          onClick={() => handleSelectRoute(route.id)}
+        >{`/${route.name}`}</RoutePathLabel>
+        <NewMethodButton
+          onClick={() =>
+            UpdateForm({ UPDATE_TYPE: "new_method", ROUTE_ID: route.id })
+          }
+        >
+          New Method
+        </NewMethodButton>
+      </RouteInfoWrapper>
+
       {route.methods.map((method) => (
-        <StyledRouteItem key={method.id}>
+        <RouteControls key={method.id}>
           <MethodSelector
             UpdateForm={UpdateForm}
             routeId={route.id}
@@ -32,24 +46,15 @@ const RouteItem = ({
             currentMethod={method.type}
           />
 
-          <StyledButton onClick={() => handleRemoveMethod(method.id)}>
+          <Button onClick={() => handleRemoveMethod(method.id, route.id)}>
             Delete
-          </StyledButton>
-
-          <StyledButton onClick={() => handleSelectMethod(method.id, route.id)}>
+          </Button>
+          <Button onClick={() => handleSelectMethod(method.id, route.id)}>
             Select
-          </StyledButton>
-        </StyledRouteItem>
+          </Button>
+        </RouteControls>
       ))}
-
-      <StyledButton
-        onClick={() =>
-          UpdateForm({ UPDATE_TYPE: "new_method", ROUTE_ID: route.id })
-        }
-      >
-        New Method
-      </StyledButton>
-    </StyledRoutesListItem>
+    </RoutesListItem>
   );
 };
 

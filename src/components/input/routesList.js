@@ -1,10 +1,10 @@
 import tw from "tailwind-styled-components";
 import RouteItem from "./routeItem";
 
-const StyledMain = tw.div`col-span-2 border-black border-l-2 border-r-2 border-b-2 p-2`;
-const StyledRoutesTitle = tw.h1`text-lg text-center font-medium underline`;
-const StyledRoutesList = tw.ol`list-none border-2 p-1 h-[24rem] overflow-y-scroll`;
-const StyledNewRouteButton = tw.button`my-1 w-full border-2`;
+const Main = tw.div`col-span-2 border-black border-l-2 border-r-2 border-b-2 px-2`;
+const RoutesTitle = tw.h1`text-lg text-center font-medium underline`;
+const List = tw.ol`flex flex-col gap-2 list-none px-1 max-h-[23rem] overflow-y-scroll`;
+const NewRouteButton = tw.button`w-full border-2 border-gray-300 p-2 my-1 transition-all ease-in-out delay-150 hover:bg-gray-300 hover:border-gray-400`;
 
 const RoutesList = ({
   routes,
@@ -13,9 +13,9 @@ const RoutesList = ({
   handleSelectMethod,
 }) => {
   return (
-    <StyledMain>
-      <StyledRoutesTitle>Routes</StyledRoutesTitle>
-      <StyledRoutesList>
+    <Main>
+      <RoutesTitle>Routes</RoutesTitle>
+      <List>
         {routes.map((route) => {
           return (
             <RouteItem
@@ -27,14 +27,12 @@ const RoutesList = ({
             />
           );
         })}
-      </StyledRoutesList>
+      </List>
 
-      <StyledNewRouteButton
-        onClick={() => UpdateForm({ UPDATE_TYPE: "new_route" })}
-      >
+      <NewRouteButton onClick={() => UpdateForm({ UPDATE_TYPE: "new_route" })}>
         New Route
-      </StyledNewRouteButton>
-    </StyledMain>
+      </NewRouteButton>
+    </Main>
   );
 };
 

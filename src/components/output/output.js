@@ -10,6 +10,7 @@ const Output = ({
   handleGenerateFiles,
   selectedFile,
   setSelectedFile,
+  handleDownloadFiles
 }) => {
   return (
     <StyledMain>
@@ -17,6 +18,7 @@ const Output = ({
         dir={formData.dir}
         setSelectedFile={setSelectedFile}
         handleGenerateFiles={handleGenerateFiles}
+        handleDownloadFiles={handleDownloadFiles}
       />
       <SelectedFileView selectedFile={selectedFile} />
     </StyledMain>
