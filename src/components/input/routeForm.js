@@ -6,12 +6,12 @@ import RequestBodyBox from "./requestBodyBox";
 import ParamsModal from "../modals/paramsModal";
 
 const StyledMain = tw.div`col-span-8 border-black border-l-2 border-b-2 p-1`;
-const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12`;
-const StyledRouteMethod = tw.span`col-span-1 bg-slate-200 border-r-2 border-gray-100 text-center text-lg tracking-wider rounded-l-md hover:bg-slate-300 hover:cursor-pointer transition ease-in-out delay-75`;
+const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 bg-slate-200`;
+const StyledRouteMethod = tw.span`col-span-1 border-r-2 border-gray-100 text-center text-lg tracking-wider rounded-l-md hover:bg-slate-300 hover:cursor-pointer transition ease-in-out delay-75`;
 const StyledRouteNamePrefixWrapper = tw.div`flex col-span-10`;
-const StyledRoutePrefix = tw.p`px-2 text-right bg-slate-200 text-lg shadow-inner`;
-const StyledRouteNameInput = tw.input`col-span-8 w-full bg-slate-200 text-lg focus:outline-none transition ease-in-out delay-100 shadow-inner`;
-const StyledDeleteButton = tw.button`col-span-1 bg-slate-200 border-l-2 border-gray-100 rounded-r-md hover:bg-slate-300 transition ease-in-out delay-75`;
+const StyledRoutePrefix = tw.p`px-1 h-full pt-1 my-auto shadow-inner`;
+const StyledRouteNameInput = tw.input`col-span-8 w- h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100 shadow-inner`;
+const StyledDeleteButton = tw.button`col-span-1 border-l-2 border-gray-100 rounded-r-md hover:bg-slate-300 transition ease-in-out delay-75`;
 const StyledRouteOptionWrapper = tw.div`flex flex-col max-h-[26rem]`;
 
 const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {

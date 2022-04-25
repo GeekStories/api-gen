@@ -36,14 +36,6 @@ const CreateRoute = (formData) => {
     contents: "",
   });
 
-  // Repository (functions for accessing db)
-  updatedForm.dir.repositories.push({
-    id: `repository_file_${updatedForm.dir.repositories.length}`,
-    name: randomName,
-    ext: "js",
-    contents: "",
-  });
-
   return updatedForm;
 };
 

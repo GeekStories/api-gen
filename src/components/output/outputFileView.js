@@ -50,21 +50,6 @@ const OutputFileView = ({
             ))}
           </Files>
         </Folder>
-        <Folder>
-          <FolderLabel>
-            <FcFolder />
-            repositories
-          </FolderLabel>
-          <Files>
-            {dir.repositories.map((item) => (
-              <File
-                key={item.id}
-                file={item}
-                setSelectedFile={setSelectedFile}
-              />
-            ))}
-          </Files>
-        </Folder>
         {dir.defaults.map((item) => (
           <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
         ))}

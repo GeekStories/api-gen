@@ -13,8 +13,9 @@ const GenerateFilesContents = (formData) => {
     route.contents = GenerateRouteFile(routes[index]);
   });
 
-  newDir.middleware.forEach((route, index) => {
-    route.contents = GenerateMiddlewareFile(routes[index]);
+  // Middleware Files
+  newDir.middleware.forEach((middleware, index) => {
+    middleware.contents = GenerateMiddlewareFile(routes[index]);
   });
 
   return newDir;
@@ -22,9 +23,7 @@ const GenerateFilesContents = (formData) => {
 
 const GenerateAppContents = (routes) => {
   return `
-    const { 
-      errors
-    } = require("celebrate");
+    const { errors } = require("celebrate");
 
     const cors = require("cors");
     const express = require("express");
@@ -44,6 +43,7 @@ const GenerateAppContents = (routes) => {
       .map((route) => `app.use("/${route.name}", ${route.name}Route);`)
       .join("\n")}
 
+    app.use(errors());
     module.exports = app;
     `;
 };
@@ -60,11 +60,9 @@ const GeneratePackageContents = (dependencies) => {
     "author": "",
     "license": "ISC",
     "dependencies": {
-      ${dependencies.map((dependency, index) => {
-        let str = `"${dependency.name}": "^${dependency.version}"`;
-        let com = index !== dependencies.length - 1 ? `\n` : "";
-        return `${str}${com}`;
-      })}
+      ${dependencies
+        .map((dependency) => `"${dependency.name}": "^${dependency.version}"`)
+        .join(",")}
     }
   }`;
 };
@@ -72,114 +70,88 @@ const GeneratePackageContents = (dependencies) => {
 const GenerateRouteFile = (route) => {
   const { methods } = route;
   return `
-    const express = require("express");
-    const router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-    const ${route.name}Validation = require("../middleware/${route.name}.js");
-    const ${route.name}Repository = require("../repositories/${route.name}.js");
+const ${route.name}Validation = require("../middleware/${route.name}.js");
+const ${route.name}Repository = require("../repositories/${route.name}.js");
 
-    ${methods
-      .map((method) => {
-        let paramRoutes = "";
+${methods.map((method) => {
+    let paramRoutes = "";
 
-        if (method.params.length > 0) {
-          paramRoutes = method.params.map(
-            (param) => `router.${method.type.toLowerCase()}("/:${
-              param.name
-            }", ${route.name}Validation.${method.type}, (req, res, next) => {
-                try {
-                  const { ${param.name} } = req.params;
-                  /* ROUTE LOGIC GOES HERE */
+    if (method.params.length > 0) {
+      paramRoutes = method.params.map((param) =>
+`router.${method.type.toLowerCase()}("/:${param.name}", ${route.name}Validation.${method.type}, (req, res, next) => {
+  try {
+    const { ${param.name} } = req.params;
 
-                  return res.send("Route Hit!");
-              } catch (error) {
-                next(error);
-              }
-            });`
-          );
-        }
+    /* ROUTE LOGIC GOES HERE */
 
-        let otherRoutes = `router.${method.type.toLowerCase()}("/", ${
-          route.name
-        }Validation.${method.type}, (req, res, next) => {
-              try {
-                /* ROUTE LOGIC GOES HERE */
-              ${
-                method.body !== null
-                  ? `const { ${[...Object.keys(JSON.parse(method.body))]
-                      .map((key) => `${key}`)
-                      .join(", ")} } = req.body; \n`
-                  : ""
-              }
-              return res.send("Route Hit!");
-            } catch (error) {
-              next(error);
-            }
-          });`;
+    return res.send(\`${param.name}: \${${param.name}}\`);
+  } catch (error) {
+    next(error);
+  }
+});`
+    );
+    }
 
-        return `${paramRoutes}${otherRoutes}`;
-      })
-      .join("\n\n")}
+    let otherRoutes = 
+`router.${method.type.toLowerCase()}("/", ${route.name}Validation.${method.type}, (req, res, next) => {
+  try {
+    /* ROUTE LOGIC GOES HERE */
 
+    ${method.body !== null ? `const { ${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")} } = req.body;\n` : "" }
 
+    return res.send(${method.body !== null ? `{${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")}}`: '"Route Hit!"'});
+  } catch (error) {
+    next(error);
+  }
+});`;
 
-    module.exports = router;
-  `;
+    return `${paramRoutes}${otherRoutes}`;
+  })
+  .join("\n\n")}
+
+module.exports = router;
+`;
 };
 
-const GenerateMiddlewareFile = (route) => {
+const GenerateMiddlewareFile = (middleware) => {
   const GenerateParams = (params, type) => {
-    return `[Segments.${type}]: Joi.object().keys({
-      ${params.map(
-        (param) =>
-          `${param.name}: Joi.${param.type}()${param.options
-            .map((option) => {
-              let o = option.key;
-              if (o === "minLength") o = "min";
-              if (o === "maxLength") o = "max";
-              return `.${o}(${
-                typeof option.value === "boolean" ? "" : option.value
-              })`;
-            })
-            .join("")}`
+    return `
+    [Segments.${type}]: Joi.object().keys({
+      ${params.map((param) =>
+        `${param.name}: Joi.${param.type}()${param.options.map((option) => {
+            return `.${option.key === "minLength" ? "min" : option.key === 'maxLength' ? "max" : option.key}(${typeof option.value === "boolean" ? "" : option.value})`;
+          }).join("")}`
       )}
     }),`;
   };
 
   const GenerateBody = (body) => {
-    return `[Segments.BODY]: Joi.object().keys({
-      ${[...Object.keys(body)].map((key) => `${key}: Joi.${body[[key]]}()`)}
+    return `
+    [Segments.BODY]: Joi.object().keys({
+      ${[...Object.keys(body)].map((key) => `${key}: Joi.${body[[key]]}()`).join(",\n")}
     }),`;
   };
 
   return `
-    const { celebrate, Joi, Segments } = require("celebrate");
+const { celebrate, Joi, Segments } = require("celebrate");
+const ${middleware.name}Validation = {
+  ${middleware.methods.map((method) => {
+  const params = method.params.length > 0 ? GenerateParams(method.params, "PARAMS") : "";
+  const queries = method.queries.length > 0 ? GenerateParams(method.queries, "QUERY") : "";
+  const body = method.body !== null ? GenerateBody(JSON.parse(method.body)) : "";
 
-    const ${route.name}Validation = {
-      ${route.methods
-        .map((method) => {
-          const params =
-            method.params.length > 0
-              ? GenerateParams(method.params, "PARAMS")
-              : "";
-          const queries =
-            method.queries.length > 0
-              ? GenerateParams(method.queries, "QUERIES")
-              : "";
-          const body =
-            method.body !== null ? GenerateBody(JSON.parse(method.body)) : "";
+  return params !== "" || queries !== "" || body !== ""
+    ? `${method.type.toUpperCase()}: celebrate({
+        ${params}${queries}${body}
+      })`
+    : "";
+  }).join(",\n")}
+}
 
-          return params !== "" || queries !== "" || body !== ""
-            ? `${method.type.toUpperCase()}: celebrate({
-                ${params}${queries}${body}
-              }),`
-            : "";
-        })
-        .join("")}
-    }
-
-    module.exports = ${route.name}Validation;
-  `;
+module.exports = ${middleware.name}Validation;`;
 };
 
 export default GenerateFilesContents;
