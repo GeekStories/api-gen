@@ -25,9 +25,6 @@ const UpdateRouteName = (formData, routeId, newRouteName) => {
   // Edit middleware file name
   newFormData.dir.middleware[fileIndex].name = newRouteName;
 
-  // Edit repositories file name
-  newFormData.dir.repositories[fileIndex].name = newRouteName;
-
   return newFormData;
 };
 

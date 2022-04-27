@@ -1,6 +1,6 @@
 import CheckDependencyExists from "./checkDependencyExists";
 
-const RemoveDependency = (formData, id, dependencyName) => {
+const RemoveDependency = (formData, id) => {
   if (id === "") {
     console.log(`Invalid Item: ${id}`);
     return formData;

@@ -74,19 +74,15 @@ const express = require("express");
 const router = express.Router();
 
 const ${route.name}Validation = require("../middleware/${route.name}.js");
-const ${route.name}Repository = require("../repositories/${route.name}.js");
 
 ${methods.map((method) => {
     let paramRoutes = "";
-
     if (method.params.length > 0) {
       paramRoutes = method.params.map((param) =>
 `router.${method.type.toLowerCase()}("/:${param.name}", ${route.name}Validation.${method.type}, (req, res, next) => {
   try {
     const { ${param.name} } = req.params;
-
     /* ROUTE LOGIC GOES HERE */
-
     return res.send(\`${param.name}: \${${param.name}}\`);
   } catch (error) {
     next(error);
@@ -94,20 +90,16 @@ ${methods.map((method) => {
 });`
     );
     }
-
     let otherRoutes = 
 `router.${method.type.toLowerCase()}("/", ${route.name}Validation.${method.type}, (req, res, next) => {
   try {
-    /* ROUTE LOGIC GOES HERE */
-
     ${method.body !== null ? `const { ${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")} } = req.body;\n` : "" }
-
+    /* ROUTE LOGIC GOES HERE */
     return res.send(${method.body !== null ? `{${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")}}`: '"Route Hit!"'});
   } catch (error) {
     next(error);
   }
 });`;
-
     return `${paramRoutes}${otherRoutes}`;
   })
   .join("\n\n")}
@@ -142,7 +134,6 @@ const ${middleware.name}Validation = {
   const params = method.params.length > 0 ? GenerateParams(method.params, "PARAMS") : "";
   const queries = method.queries.length > 0 ? GenerateParams(method.queries, "QUERY") : "";
   const body = method.body !== null ? GenerateBody(JSON.parse(method.body)) : "";
-
   return params !== "" || queries !== "" || body !== ""
     ? `${method.type.toUpperCase()}: celebrate({
         ${params}${queries}${body}

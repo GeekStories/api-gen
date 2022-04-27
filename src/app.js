@@ -73,11 +73,7 @@ const App = () => {
         );
         break;
       case "remove_dependency":
-        updatedForm = API.RemoveDependency(
-          formData,
-          data.DEPENDENCY_ID,
-          data.DEPENDENCY_NAME
-        );
+        updatedForm = API.RemoveDependency(formData, data.DEPENDENCY_ID);
         break;
       case "new_route":
         updatedForm = API.CreateRoute(formData);
@@ -178,12 +174,6 @@ const App = () => {
     const routesFolder = zip.folder("routes");
     formData.dir.routes.forEach((file) =>
       routesFolder.file(`${file.name}.${file.ext}`, file.contents)
-    );
-
-    // Repositories Files
-    const repositoriesFolder = zip.folder("repositories");
-    formData.dir.repositories.forEach((file) =>
-      repositoriesFolder.file(`${file.name}.${file.ext}`, file.contents)
     );
 
     const result = await zip.generateAsync({ type: "blob" });

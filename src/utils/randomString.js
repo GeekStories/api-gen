@@ -1,4 +1,4 @@
-const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+const characters = "abcdefghijklmnopqrstuvwxyz";
 
 const generateString = (length) => {
   let result = "";

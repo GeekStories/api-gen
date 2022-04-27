@@ -26,11 +26,6 @@ const RemoveRoute = (formData, routeId) => {
     (m) => m.id !== `middleware_file_${routeIndex}`
   );
 
-  // Remove file from repositories
-  newFormData.dir.repositories = newFormData.dir.repositories.filter(
-    (repo) => repo.id !== `repository_file_${routeIndex}`
-  );
-
   return newFormData;
 };
 

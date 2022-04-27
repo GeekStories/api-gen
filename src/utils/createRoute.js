@@ -2,7 +2,7 @@ import RandomString from "./randomString";
 
 const CreateRoute = (formData) => {
   let updatedForm = { ...formData };
-  const randomName = `new-route-${RandomString(3)}`;
+  const randomName = `newroute${RandomString(3)}`;
   updatedForm.routes = [
     ...updatedForm.routes,
     {
