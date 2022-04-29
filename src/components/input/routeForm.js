@@ -5,14 +5,11 @@ import ParamsList from "./paramsList";
 import RequestBodyBox from "./requestBodyBox";
 import ParamsModal from "../modals/paramsModal";
 
-const StyledMain = tw.div`col-span-8 border-black border-l-2 border-b-2 p-1`;
+const StyledMain = tw.div`xl:col-span-8 col-span-7 grid grid-cols-1 p-1 border-l-[1px] border-b-[1px] border-black`;
 const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 bg-slate-200`;
-const StyledRouteMethod = tw.span`col-span-1 border-r-2 border-gray-100 text-center text-lg tracking-wider rounded-l-md hover:bg-slate-300 hover:cursor-pointer transition ease-in-out delay-75`;
-const StyledRouteNamePrefixWrapper = tw.div`flex col-span-10`;
-const StyledRoutePrefix = tw.p`px-1 h-full pt-1 my-auto shadow-inner`;
-const StyledRouteNameInput = tw.input`col-span-8 w- h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100 shadow-inner`;
-const StyledDeleteButton = tw.button`col-span-1 border-l-2 border-gray-100 rounded-r-md hover:bg-slate-300 transition ease-in-out delay-75`;
-const StyledRouteOptionWrapper = tw.div`flex flex-col max-h-[26rem]`;
+const StyledRouteMethod = tw.span`xl:col-span-2 col-span-3 border-r-2 border-gray-100 text-center text-lg tracking-wider rounded-l-md hover:bg-slate-300 hover:cursor-pointer transition ease-in-out delay-75`;
+const StyledRouteNameInput = tw.input`xl:col-span-9 col-span-8 pl-2 h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100`;
+const StyledRouteOptionWrapper = tw.div`flex flex-col`;
 
 const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
   const [routeName, setRouteName] = useState("");
@@ -35,13 +32,6 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
     });
 
     setRouteName(newValue);
-  };
-
-  const handleRemoveSelectedRoute = (routeId) => {
-    UpdateForm({ UPDATE_TYPE: "remove_route", ROUTE_ID: routeId });
-
-    setRouteName("");
-    selectedRoute = {};
   };
 
   const handleParamsModal = () => {
@@ -120,19 +110,11 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
 
       <StyledRouteBasicInfoWrapper>
         <StyledRouteMethod>{selectedMethod.type}</StyledRouteMethod>
-        <StyledRouteNamePrefixWrapper>
-          <StyledRoutePrefix>/</StyledRoutePrefix>
-          <StyledRouteNameInput
-            type="text"
-            value={routeName}
-            onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
-          />
-        </StyledRouteNamePrefixWrapper>
-        <StyledDeleteButton
-          onClick={() => handleRemoveSelectedRoute(selectedRoute.id)}
-        >
-          Delete
-        </StyledDeleteButton>
+        <StyledRouteNameInput
+          type="text"
+          value={routeName}
+          onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
+        />
       </StyledRouteBasicInfoWrapper>
 
       <StyledRouteOptionWrapper>

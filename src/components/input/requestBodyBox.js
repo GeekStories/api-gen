@@ -3,7 +3,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import beautify from "js-beautify";
 import { useState, useEffect } from "react";
 
-const BodyWrapper = tw.div`p-1 my-1 h-[9rem]`;
+const BodyWrapper = tw.div`h-[9rem]`;
 const OptionLabel = tw.p`font-medium underline underline-offset-1`;
 
 const defaultFormatOptions = { indent_size: 2, space_in_empty_paren: true };
@@ -38,7 +38,7 @@ const MethodBodyBox = ({ selectedMethodBody, handleChangeMethodBody }) => {
             "ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace",
           boxShadow: "inset 0px 0px 15px -6px rgba(0,0,0,0.5)",
           borderRadius: "7px",
-          height: "100%",
+          height: "80%",
         }}
       />
     </BodyWrapper>

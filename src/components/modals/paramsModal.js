@@ -8,13 +8,15 @@ import NumberValidationOptions from "../validation/numberValidationOptions";
 const NewParamModal = tw.div`
   ${(p) => (p.$state ? "grid" : "hidden")}
   border-2
-  rounded-lg
-  shadow-lg
   border-gray-300
   bg-gray-200
+  rounded-lg
+  shadow-inner
   fixed
-  top-20
-  left-[50rem]
+  top-[5%]
+  left-[50%]
+  -translate-x-1/2
+  translate-y-1/4
   z-10
   h-auto
   w-[60rem]

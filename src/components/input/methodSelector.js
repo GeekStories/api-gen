@@ -1,7 +1,7 @@
 import { useState } from "react";
 import tw from "tailwind-styled-components";
 
-const RouteMethodSelector = tw.select`col-span-1 text-sm border-2`;
+const RouteMethodSelector = tw.select`col-span-1 border-2 w-full`;
 
 const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 

@@ -3,14 +3,14 @@ import tw from "tailwind-styled-components";
 import OutputFileView from "./outputFileView";
 import SelectedFileView from "./selectedFileView";
 
-const StyledMain = tw.div`grid grid-cols-12 gap-1 rounded-sm`;
+const StyledMain = tw.div`h-full flex rounded-sm w-full`;
 
 const Output = ({
   formData,
   handleGenerateFiles,
   selectedFile,
   setSelectedFile,
-  handleDownloadFiles
+  handleDownloadFiles,
 }) => {
   return (
     <StyledMain>

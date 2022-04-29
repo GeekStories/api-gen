@@ -1,6 +1,8 @@
 import tw from "tailwind-styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import API from "./API";
+import MobileApp from "./mobile";
 
 import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
@@ -13,8 +15,8 @@ import defaultServer from "./defaults/server";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
-const Main = tw.div`h-screen grid grid-rows-2 gap-1`;
-const UserInputArea = tw.div`grid grid-cols-12 gap-1`;
+const Main = tw.div`h-screen flex flex-col`;
+const UserInputArea = tw.div`grid grid-cols-12`;
 
 const defaultFormData = {
   dependencies: [
@@ -45,6 +47,8 @@ const App = () => {
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
   const [selectedFile, setSelectedFile] = useState({});
+
+  const screenWidth = useWindowSize();
 
   const handleSelectRoute = (id) => {
     setSelectedRoute(formData.routes.find((route) => route.id === id));
@@ -180,7 +184,7 @@ const App = () => {
     saveAs(result, "project.zip");
   };
 
-  return (
+  return screenWidth > 1024 ? (
     <Main>
       <UserInputArea>
         <Dependencies
@@ -208,7 +212,29 @@ const App = () => {
         handleDownloadFiles={handleDownloadFiles}
       />
     </Main>
+  ) : (
+    <MobileApp />
   );
+};
+
+const useWindowSize = () => {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowWidth, setWindowWidth] = useState(undefined);
+  useEffect(() => {
+    // Handler to call on window resize
+    const handleResize = () => {
+      // Set window width/height to state
+      setWindowWidth(window.innerWidth);
+    };
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowWidth;
 };
 
 export default App;

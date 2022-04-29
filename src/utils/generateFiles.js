@@ -1,3 +1,7 @@
+import beautify from "js-beautify";
+
+const defaultFormatOptions = { indent_size: 2, space_in_empty_paren: true };
+
 const GenerateFilesContents = (formData) => {
   let newDir = { ...formData.dir };
   let routes = { ...formData.routes };
@@ -69,33 +73,52 @@ const GeneratePackageContents = (dependencies) => {
 
 const GenerateRouteFile = (route) => {
   const { methods } = route;
-  return `
-const express = require("express");
+  return beautify(
+    `const express = require("express");
 const router = express.Router();
 
 const ${route.name}Validation = require("../middleware/${route.name}.js");
 
-${methods.map((method) => {
+${methods
+  .map((method) => {
     let paramRoutes = "";
     if (method.params.length > 0) {
-      paramRoutes = method.params.map((param) =>
-`router.${method.type.toLowerCase()}("/:${param.name}", ${route.name}Validation.${method.type}, (req, res, next) => {
-  try {
-    const { ${param.name} } = req.params;
-    /* ROUTE LOGIC GOES HERE */
-    return res.send(\`${param.name}: \${${param.name}}\`);
-  } catch (error) {
-    next(error);
-  }
-});`
-    );
+      paramRoutes = method.params
+        .map(
+          (param) =>
+            `router.${method.type.toLowerCase()}("/:${param.name}", ${
+              route.name
+            }Validation.${method.type}, (req, res, next) => {
+            try {
+              const { ${param.name} } = req.params;
+              /* ROUTE LOGIC GOES HERE */
+              return res.send(\`${param.name}: \${${param.name}}\`);
+            } catch (error) {
+              next(error);
+            }
+        });`
+        )
+        .join("\n\n");
     }
-    let otherRoutes = 
-`router.${method.type.toLowerCase()}("/", ${route.name}Validation.${method.type}, (req, res, next) => {
+    let otherRoutes = `router.${method.type.toLowerCase()}("/", ${
+      route.name
+    }Validation.${method.type}, (req, res, next) => {
   try {
-    ${method.body !== null ? `const { ${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")} } = req.body;\n` : "" }
+    ${
+      method.body !== null
+        ? `const { ${[...Object.keys(JSON.parse(method.body))]
+            .map((key) => `${key}`)
+            .join(", ")} } = req.body;`
+        : ""
+    }
     /* ROUTE LOGIC GOES HERE */
-    return res.send(${method.body !== null ? `{${[...Object.keys(JSON.parse(method.body))].map((key) => `${key}`).join(", ")}}`: '"Route Hit!"'});
+    return res.send(${
+      method.body !== null
+        ? `{${[...Object.keys(JSON.parse(method.body))]
+            .map((key) => `${key}`)
+            .join(", ")}}`
+        : '"Route Hit!"'
+    });
   } catch (error) {
     next(error);
   }
@@ -105,17 +128,28 @@ ${methods.map((method) => {
   .join("\n\n")}
 
 module.exports = router;
-`;
+`,
+    defaultFormatOptions
+  );
 };
 
 const GenerateMiddlewareFile = (middleware) => {
   const GenerateParams = (params, type) => {
     return `
     [Segments.${type}]: Joi.object().keys({
-      ${params.map((param) =>
-        `${param.name}: Joi.${param.type}()${param.options.map((option) => {
-            return `.${option.key === "minLength" ? "min" : option.key === 'maxLength' ? "max" : option.key}(${typeof option.value === "boolean" ? "" : option.value})`;
-          }).join("")}`
+      ${params.map(
+        (param) =>
+          `${param.name}: Joi.${param.type}()${param.options
+            .map((option) => {
+              return `.${
+                option.key === "minLength"
+                  ? "min"
+                  : option.key === "maxLength"
+                  ? "max"
+                  : option.key
+              }(${typeof option.value === "boolean" ? "" : option.value})`;
+            })
+            .join("")}`
       )}
     }),`;
   };
@@ -123,26 +157,36 @@ const GenerateMiddlewareFile = (middleware) => {
   const GenerateBody = (body) => {
     return `
     [Segments.BODY]: Joi.object().keys({
-      ${[...Object.keys(body)].map((key) => `${key}: Joi.${body[[key]]}()`).join(",\n")}
+      ${[...Object.keys(body)]
+        .map((key) => `${key}: Joi.${body[[key]]}()`)
+        .join(",\n")}
     }),`;
   };
 
-  return `
-const { celebrate, Joi, Segments } = require("celebrate");
+  return beautify(
+    `const { celebrate, Joi, Segments } = require("celebrate");
+
 const ${middleware.name}Validation = {
-  ${middleware.methods.map((method) => {
-  const params = method.params.length > 0 ? GenerateParams(method.params, "PARAMS") : "";
-  const queries = method.queries.length > 0 ? GenerateParams(method.queries, "QUERY") : "";
-  const body = method.body !== null ? GenerateBody(JSON.parse(method.body)) : "";
-  return params !== "" || queries !== "" || body !== ""
-    ? `${method.type.toUpperCase()}: celebrate({
-        ${params}${queries}${body}
-      })`
-    : "";
-  }).join(",\n")}
+  ${middleware.methods
+    .map((method) => {
+      const params =
+        method.params.length > 0 ? GenerateParams(method.params, "PARAMS") : "";
+      const queries =
+        method.queries.length > 0
+          ? GenerateParams(method.queries, "QUERY")
+          : "";
+      const body =
+        method.body !== null ? GenerateBody(JSON.parse(method.body)) : "";
+      return params !== "" || queries !== "" || body !== ""
+        ? `${method.type.toUpperCase()}: celebrate({${params}${queries}${body}})`
+        : "";
+    })
+    .join(",\n")}
 }
 
-module.exports = ${middleware.name}Validation;`;
+module.exports = ${middleware.name}Validation;`,
+    defaultFormatOptions
+  );
 };
 
 export default GenerateFilesContents;
