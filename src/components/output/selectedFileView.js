@@ -22,7 +22,7 @@ const SelectedFileView = ({ selectedFile }) => {
           backgroundColor: "#f5f5f5",
           boxShadow: "inset 0px 0px 15px -6px rgba(0,0,0,0.5)",
           borderRadius: "7px",
-          height: "100%",
+          maxHeight: "32rem",
           width: "100%",
           overflowY: "scroll"
         }}
