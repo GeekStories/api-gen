@@ -1,44 +1,48 @@
-### API-Gen
+# API-Gen - Express Server Generator
+
+![Main Screen](./_readme/screenshot1.png)
 
 A Simple React App that generates a boilerplate Express API Server using a simple form input style interface.
 
 ## Project Status
 1 May 2022 v1.0.0 - First Release
 
-## Project Screen Shot(s)
+## Requirement
 
-#### Example:   
+- Node
+- Npm
 
-[ PRETEND SCREEN SHOT IS HERE ]
+## Usage
 
-[ PRETEND OTHER SCREEN SHOT IS HERE ]
+Clone it!
 
-## Installation and Setup Instructions
+```
+$ git clone git@github.com:geekstories/api-gen.git
+```
 
-#### Example:  
+Go into the project directory and run the command:
 
-Clone down this repository. You will need `node 16.14.2` and `npm 8.1.3` installed globally on your machine.  
+```
+$ npm start
+```
 
-Installation:
+Open `http://localhost:3000` and enjoy!
 
-`npm install`  
 
-To Run Test Suite:  
+## Contributors
 
-`npm test`  
+- Creator of API-Gen @geekstories
 
-To Start Server:
-
-`npm start`  
-
-To Visit App:
-
-`http://localhost:3000/`  
-
-## Reflection
-
-  - What was the context for this project? (ie: was this a side project? was this for Turing? was this for an experiment?)
-  - What did you set out to build?
-  - Why was this project challenging and therefore a really good learning experience?
-  - What were some unexpected obstacles?
-  - What tools did you use to implement this project? 
+## Tools Used
+  - Core:
+    - [React v18](https://reactjs.org/)
+    - [React DOM](https://reactjs.org/docs/react-dom.html)
+    - [React Icons](https://react-icons.github.io/react-icons/)
+    - [React Scripts](https://www.npmjs.com/package/react-scripts)
+  - Styling:
+    - [TailwindCSS v3](https://tailwindcss.com/)
+    - [Tailwind Styled Components](https://www.npmjs.com/package/tailwind-styled-components)
+  - Extras:
+    - [React Textarea Code Editor](https://www.npmjs.com/package/@uiw/react-textarea-code-editor)
+    - [Js Beautify](https://www.npmjs.com/package/js-beautify)
+    - [Js Zip](https://www.npmjs.com/package/jszip)
