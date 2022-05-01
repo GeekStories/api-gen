@@ -17,7 +17,7 @@ A Simple React App that generates a boilerplate Express API Server using a simpl
 Clone it!
 
 ```
-$ git clone git@github.com:geekstories/api-gen.git
+$ git clone git@github.com:GeekStories/api-gen.git
 ```
 
 Go into the project directory and run the command:
