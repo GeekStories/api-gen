@@ -1,22 +1,19 @@
 import { useState } from "react";
 import tw from "tailwind-styled-components";
 
+import { updateMethodType } from "../../store/api/routes";
+import { useDispatch } from "react-redux";
+
 const RouteMethodSelector = tw.select`col-span-1 border-2 w-full`;
 
 const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 
-const MethodSelector = ({ UpdateForm, routeId, methodId, currentMethod }) => {
+const MethodSelector = ({ routeId, methodId, currentMethod }) => {
+  const dispatch = useDispatch();
   const [routeMethod, setRouteMethod] = useState(currentMethod);
 
   const handleChangeMethod = (e, routeId, methodId) => {
-    const result = UpdateForm({
-      UPDATE_TYPE: "change_method_type",
-      ROUTE_ID: routeId,
-      METHOD_ID: methodId,
-      NEW_TYPE: e.target.value,
-    });
-
-    if (result === "fail") return null;
+    dispatch(updateMethodType({ routeId, methodId, newValue: e.target.value }));
     setRouteMethod(e.target.value);
   };
 

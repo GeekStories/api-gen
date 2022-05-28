@@ -22,7 +22,7 @@ const SocialPlugs = tw.div`row-span-1 grid grid-cols-4 p-1`;
 const SocialLink = tw.a`m-auto`;
 
 const OutputFileView = ({
-  dir,
+  projectFiles,
   setSelectedFile,
   handleGenerateFiles,
   handleDownloadFiles,
@@ -36,13 +36,14 @@ const OutputFileView = ({
             middleware
           </FolderLabel>
           <Files>
-            {dir.middleware.map((item) => (
-              <File
-                key={item.id}
-                file={item}
-                setSelectedFile={setSelectedFile}
-              />
-            ))}
+            {projectFiles &&
+              projectFiles.middleware.map((item) => (
+                <File
+                  key={item.id}
+                  file={item}
+                  setSelectedFile={setSelectedFile}
+                />
+              ))}
           </Files>
         </Folder>
         <Folder>
@@ -51,18 +52,20 @@ const OutputFileView = ({
             routes
           </FolderLabel>
           <Files>
-            {dir.routes.map((item) => (
-              <File
-                key={item.id}
-                file={item}
-                setSelectedFile={setSelectedFile}
-              />
-            ))}
+            {projectFiles &&
+              projectFiles.routes.map((item) => (
+                <File
+                  key={item.id}
+                  file={item}
+                  setSelectedFile={setSelectedFile}
+                />
+              ))}
           </Files>
         </Folder>
-        {dir.defaults.map((item) => (
-          <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
-        ))}
+        {projectFiles &&
+          projectFiles.defaults.map((item) => (
+            <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+          ))}
       </RootFolder>
       <ControlsSocialsWrapper>
         <DirectoryControls>

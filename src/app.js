@@ -1,57 +1,29 @@
 import tw from "tailwind-styled-components";
 import { useState, useEffect } from "react";
-
-import API from "./API";
 import MobileApp from "./mobile";
+
+import { useSelector } from "react-redux";
 
 import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
-import RoutesList from "./components/input/routesList";
 import Output from "./components/output/output";
 import GenerateFilesContents from "./utils/generateFiles";
-import defaultPackage from "./defaults/package";
-import defaultApp from "./defaults/app";
-import defaultServer from "./defaults/server";
+
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 
 const Main = tw.div`h-screen flex flex-col`;
 const UserInputArea = tw.div`grid grid-cols-12`;
 
-const defaultFormData = {
-  dependencies: [
-    { name: "express", version: "4.17.3", id: "dep_0" },
-    { name: "cors", version: "2.8.5", id: "dep_1" },
-    { name: "nodemon", version: "2.0.15", id: "dep_2" },
-    { name: "celebrate", version: "15.0.1", id: "dep_3" },
-  ],
-  routes: [],
-  dir: {
-    defaults: [
-      { id: "root_file_0", name: "app", ext: "js", contents: defaultApp },
-      { id: "root_file_1", name: "server", ext: "js", contents: defaultServer },
-      {
-        id: "root_file_2",
-        name: "package",
-        ext: "json",
-        contents: defaultPackage,
-      },
-    ],
-    middleware: [],
-    routes: [],
-  },
-};
-
 const App = () => {
-  const [formData, setFormData] = useState(defaultFormData);
+  const dependencies = useSelector((state) => state.dependencies);
+  const routes = useSelector((state) => state.routes);
+
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
-  const [selectedFile, setSelectedFile] = useState({});
-
-  const screenWidth = useWindowSize();
 
   const handleSelectRoute = (id) => {
-    setSelectedRoute(formData.routes.find((route) => route.id === id));
+    setSelectedRoute(routes.find((route) => route.id === id));
     setSelectedMethod({});
   };
 
@@ -59,104 +31,27 @@ const App = () => {
     handleSelectRoute(routeId);
 
     setSelectedMethod(
-      formData.routes
+      routes
         .find((route) => route.id === routeId)
         .methods.find((method) => method.id === methodId)
     );
   };
 
-  const UpdateForm = (data) => {
-    let updatedForm = {};
+  const [selectedFile, setSelectedFile] = useState({});
+  const [projectFiles, setFiles] = useState({
+    defaults: [
+      { id: "root_file_0", name: "app", ext: "js", contents: "" },
+      { id: "root_file_1", name: "package", ext: "json", contents: "" },
+    ],
+    routes: [],
+    middleware: [],
+  });
 
-    switch (data.UPDATE_TYPE) {
-      case "new_dependency":
-        updatedForm = API.AddDependency(
-          formData,
-          data.DEPENDENCY_NAME,
-          data.DEPENDENCY_VERSION
-        );
-        break;
-      case "remove_dependency":
-        updatedForm = API.RemoveDependency(formData, data.DEPENDENCY_ID);
-        break;
-      case "new_route":
-        updatedForm = API.CreateRoute(formData);
-        break;
-      case "change_route_name":
-        updatedForm = API.UpdateRouteName(
-          formData,
-          data.ROUTE_ID,
-          data.NEW_NAME
-        );
-        break;
-      case "remove_route":
-        updatedForm = API.RemoveRoute(formData, data.ROUTE_ID);
-        setSelectedRoute({});
-        setSelectedMethod({});
-        break;
-      case "new_method":
-        updatedForm = API.CreateMethod(formData, data.ROUTE_ID);
-        break;
-      case "remove_method":
-        updatedForm = API.RemoveMethod(formData, data.ROUTE_ID, data.METHOD_ID);
-        setSelectedMethod({});
-        break;
-      case "change_method_type":
-        const result = API.UpdateMethodType(
-          formData,
-          data.ROUTE_ID,
-          data.METHOD_ID,
-          data.NEW_TYPE
-        );
-
-        if (result.message === "success") updatedForm = result.DATA;
-        if (result.message === "fail") return result.message;
-
-        break;
-      case "change_method_body":
-        updatedForm = API.UpdateMethodRequestBody(
-          formData,
-          data.ROUTE_ID,
-          data.METHOD_ID,
-          data.VALUE
-        );
-        break;
-      case "new_param":
-        updatedForm = API.CreateParam(
-          formData,
-          data.ROUTE_ID,
-          data.METHOD_ID,
-          data.PARAM
-        );
-        break;
-      case "remove_param":
-        updatedForm = API.RemoveParam(
-          formData,
-          data.ROUTE_ID,
-          data.METHOD_ID,
-          data.PARAM_ID,
-          data.TYPE
-        );
-        break;
-      case "new_query":
-        updatedForm = API.CreateQuery(
-          formData,
-          data.ROUTE_ID,
-          data.METHOD_ID,
-          data.QUERY
-        );
-        break;
-      default:
-        updatedForm = formData;
-        break;
-    }
-
-    setFormData(updatedForm);
-  };
+  const screenWidth = useWindowSize();
 
   const handleGenerateFiles = () => {
-    const newDir = GenerateFilesContents(formData);
-    setFormData({ ...formData, dir: newDir });
+    const dir = GenerateFilesContents(dependencies, routes);
+    setFiles(dir);
     setSelectedFile({}); // Reset selectedFile
   };
 
@@ -164,19 +59,19 @@ const App = () => {
     const zip = new JSZip();
 
     // Default Files
-    formData.dir.defaults.forEach((file) =>
+    projectFiles.defaults.forEach((file) =>
       zip.file(`${file.name}.${file.ext}`, file.contents)
     );
 
     // Middleware Files
     const middlewareFolder = zip.folder("middleware");
-    formData.dir.middleware.forEach((file) =>
+    projectFiles.middleware.forEach((file) =>
       middlewareFolder.file(`${file.name}.${file.ext}`, file.contents)
     );
 
     // Routes Files
     const routesFolder = zip.folder("routes");
-    formData.dir.routes.forEach((file) =>
+    projectFiles.routes.forEach((file) =>
       routesFolder.file(`${file.name}.${file.ext}`, file.contents)
     );
 
@@ -187,25 +82,17 @@ const App = () => {
   return screenWidth > 1024 ? (
     <Main>
       <UserInputArea>
-        <Dependencies
-          dependencies={formData.dependencies}
-          UpdateForm={UpdateForm}
-        />
-        <RoutesList
-          routes={formData.routes}
-          UpdateForm={UpdateForm}
+        <Dependencies />
+        <RouteForm
           handleSelectRoute={handleSelectRoute}
           handleSelectMethod={handleSelectMethod}
-        />
-        <RouteForm
           selectedRoute={selectedRoute}
           selectedMethod={selectedMethod}
-          UpdateForm={UpdateForm}
         />
       </UserInputArea>
 
       <Output
-        formData={formData}
+        projectFiles={projectFiles}
         handleGenerateFiles={handleGenerateFiles}
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}

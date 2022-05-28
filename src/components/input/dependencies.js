@@ -1,29 +1,34 @@
 import tw from "tailwind-styled-components";
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { add, remove } from "../../store/api/dependencies";
 
 const SearchModal = tw.div`${(p) => (p.$state ? "grid" : "hidden")} 
   border-2 bg-gray-300 gap-1 fixed top-[5rem] z-10 h-56 overflow-y-scroll w-[20rem] p-1`;
 const Main = tw.div`col-span-2 flex flex-col text-center p-1 border-b-[1px] border-black`;
 const DependencySearchResult = tw.p`text-lg text-center hover:cursor-pointer hover:underline`;
 const ListTitle = tw.h1`text-lg font-medium underline`;
-const InputWrapper = tw.div`flex justify-between p-2`;
-const DependencyInput = tw.input`border-b-2 w-full bg-gray-100 rounded-bl-lg border-gray-300 p-1 text-lg focus:outline-none`;
-const ClearInput = tw.button`text-lg text-gray-400 border-b-2 border-l-transparent border-gray-300 rounded-r-lg bg-gray-100 pr-4 hover:border-l-[1px] active:bg-gray-200 active:text-gray-500`;
+const InputWrapper = tw.form`flex justify-between p-2`;
+const DependencyInput = tw.input`border-b-2 w-full bg-gray-100 rounded-lg border-gray-300 p-2 text-lg focus:outline-none`;
 const ListWrapper = tw.ol`h-full flex flex-col gap-1`;
 const ListItem = tw.li`flex justify-between border-2 p-1`;
 const DependencyLabel = tw.p`text-lg hover:line-through hover:cursor-pointer`;
 
-const Dependencies = ({ dependencies, UpdateForm }) => {
+const Dependencies = () => {
+  const dependencies = useSelector((state) => state.dependencies);
+  const dispatch = useDispatch();
+
   const [dependencyInput, setDependencyInput] = useState("");
   const [searchResultsOpen, setSearchResultsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
 
-  const handleAddDependency = (name, version) => {
-    UpdateForm({
-      UPDATE_TYPE: "new_dependency",
-      DEPENDENCY_NAME: name,
-      DEPENDENCY_VERSION: version,
-    });
+  const handleAddNewDependency = (name, version) => {
+    dispatch(
+      add({
+        name: name,
+        version: version,
+      })
+    );
 
     setDependencyInput("");
   };
@@ -57,7 +62,7 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
           <DependencySearchResult
             key={index}
             onClick={() =>
-              handleAddDependency(item.package.name, item.package.version)
+              handleAddNewDependency(item.package.name, item.package.version)
             }
           >
             {item.package.name} - {item.package.version}
@@ -68,12 +73,11 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
         <ListTitle>Dependencies</ListTitle>
         <InputWrapper>
           <DependencyInput
-            type="text"
+            type="search"
             placeholder="axios"
             value={dependencyInput}
             onChange={(e) => handleSearchDependency(e)}
           />
-          <ClearInput onClick={() => setDependencyInput("")}>X</ClearInput>
         </InputWrapper>
         <ListWrapper>
           {dependencies.map((dependency) => {
@@ -81,11 +85,12 @@ const Dependencies = ({ dependencies, UpdateForm }) => {
               <ListItem key={dependency.id}>
                 <DependencyLabel
                   onClick={() =>
-                    UpdateForm({
-                      UPDATE_TYPE: "remove_dependency",
-                      DEPENDENCY_ID: dependency.id,
-                      DEPENDENCY_NAME: dependency.name,
-                    })
+                    dispatch(
+                      remove({
+                        name: dependency.name,
+                        id: dependency.id,
+                      })
+                    )
                   }
                 >
                   {dependency.name}@{dependency.version}

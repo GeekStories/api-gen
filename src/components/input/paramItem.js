@@ -17,7 +17,7 @@ const ParamItem = ({ item, routeName, paramType, handleRemoveParam }) => {
           ? `..?${item.name}=<${item.type}>`
           : `/${routeName}?${item.name}=<${item.type}>`}
 
-        {item.options.map((option) => (
+        {item.options?.map((option) => (
           <StyledOptionsList
             key={`option_${paramType}_${option.key}`}
           >{` ${option.key}: ${option.value}`}</StyledOptionsList>

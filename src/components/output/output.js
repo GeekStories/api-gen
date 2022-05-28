@@ -6,7 +6,7 @@ import SelectedFileView from "./selectedFileView";
 const StyledMain = tw.div`h-full flex rounded-sm w-full`;
 
 const Output = ({
-  formData,
+  projectFiles,
   handleGenerateFiles,
   selectedFile,
   setSelectedFile,
@@ -15,7 +15,7 @@ const Output = ({
   return (
     <StyledMain>
       <OutputFileView
-        dir={formData.dir}
+        projectFiles={projectFiles}
         setSelectedFile={setSelectedFile}
         handleGenerateFiles={handleGenerateFiles}
         handleDownloadFiles={handleDownloadFiles}

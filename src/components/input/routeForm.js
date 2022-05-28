@@ -1,6 +1,17 @@
 import tw from "tailwind-styled-components";
 import { useState, useEffect } from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createParam,
+  removeParam,
+  createQuery,
+  removeQuery,
+  updateRouteName,
+  updateMethodBody,
+} from "../../store/api/routes";
+
+import RoutesList from "./routesList";
 import ParamsList from "./paramsList";
 import RequestBodyBox from "./requestBodyBox";
 import ParamsModal from "../modals/paramsModal";
@@ -11,51 +22,22 @@ const StyledRouteMethod = tw.span`xl:col-span-2 col-span-3 border-r-2 border-gra
 const StyledRouteNameInput = tw.input`xl:col-span-9 col-span-8 pl-2 h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100`;
 const StyledRouteOptionWrapper = tw.div`flex flex-col`;
 
-const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
+const RouteForm = ({
+  handleSelectRoute,
+  handleSelectMethod,
+  selectedRoute,
+  selectedMethod,
+}) => {
+  const routes = useSelector((state) => state.routes);
+  const dispatch = useDispatch();
+
   const [routeName, setRouteName] = useState("");
   const [isParamsOpen, setParamsModal] = useState(false);
   const [isQueriesOpen, setQueriesModal] = useState(false);
 
-  const handleRouteNameInput = (e, routeId) => {
-    const newValue = e.target.value;
-
-    const InvalidChars = newValue.match(/[^a-z]/g);
-    if (InvalidChars) {
-      console.log("invalid character in route name: ", InvalidChars);
-      return;
-    }
-
-    UpdateForm({
-      UPDATE_TYPE: "change_route_name",
-      ROUTE_ID: routeId,
-      NEW_NAME: newValue,
-    });
-
-    setRouteName(newValue);
-  };
-
   const handleParamsModal = () => {
     if (isQueriesOpen) setQueriesModal(false);
     setParamsModal(!isParamsOpen);
-  };
-
-  const handleNewParam = (newParam) => {
-    UpdateForm({
-      UPDATE_TYPE: "new_param",
-      ROUTE_ID: selectedRoute.id,
-      METHOD_ID: selectedMethod.id,
-      PARAM: newParam,
-    });
-  };
-
-  const handleRemoveParam = (paramId, paramType) => {
-    UpdateForm({
-      UPDATE_TYPE: "remove_param",
-      ROUTE_ID: selectedRoute.id,
-      METHOD_ID: selectedMethod.id,
-      PARAM_ID: paramId,
-      TYPE: paramType,
-    });
   };
 
   const handleQueriesModal = () => {
@@ -63,22 +45,65 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
     setQueriesModal(!isQueriesOpen);
   };
 
+  const handleRouteNameInput = (e, routeId) => {
+    const newValue = e.target.value;
+    dispatch(updateRouteName({ routeId, newValue }));
+    setRouteName(newValue);
+  };
+
+  const handleNewParam = (newParam) => {
+    dispatch(
+      createParam({
+        routeId: selectedRoute.id,
+        methodId: selectedMethod.id,
+        newParam,
+      })
+    );
+  };
+
+  const handleRemoveParam = (paramId, paramType) => {
+    switch (paramType) {
+      case "param":
+        dispatch(
+          removeParam({
+            routeId: selectedRoute.id,
+            methodId: selectedMethod.id,
+            paramId,
+          })
+        );
+        break;
+      case "query":
+        dispatch(
+          removeQuery({
+            routeId: selectedRoute.id,
+            methodId: selectedMethod.id,
+            paramId,
+          })
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleNewQuery = (newQuery) => {
-    UpdateForm({
-      UPDATE_TYPE: "new_query",
-      ROUTE_ID: selectedRoute.id,
-      METHOD_ID: selectedMethod.id,
-      QUERY: newQuery,
-    });
+    dispatch(
+      createQuery({
+        routeId: selectedRoute.id,
+        methodId: selectedMethod.id,
+        newQuery,
+      })
+    );
   };
 
   const handleChangeMethodBody = (newValue) => {
-    UpdateForm({
-      UPDATE_TYPE: "change_method_body",
-      ROUTE_ID: selectedRoute.id,
-      METHOD_ID: selectedMethod.id,
-      VALUE: newValue,
-    });
+    dispatch(
+      updateMethodBody({
+        routeId: selectedRoute.id,
+        methodId: selectedMethod.id,
+        newValue,
+      })
+    );
   };
 
   useEffect(() => {
@@ -89,59 +114,94 @@ const RouteForm = ({ selectedRoute, selectedMethod, UpdateForm }) => {
   }, [selectedRoute]);
 
   return (
-    <StyledMain>
-      <ParamsModal
-        isOpen={isParamsOpen}
-        handleModal={handleParamsModal}
-        routeName={selectedRoute.name}
-        handleNewParam={handleNewParam}
-        handleNewQuery={handleNewQuery}
-        modalType="param"
+    <>
+      <RoutesList
+        handleSelectRoute={handleSelectRoute}
+        handleSelectMethod={handleSelectMethod}
       />
 
-      <ParamsModal
-        isOpen={isQueriesOpen}
-        handleModal={handleQueriesModal}
-        routeName={selectedRoute.name}
-        handleNewParam={handleNewParam}
-        handleNewQuery={handleNewQuery}
-        modalType="query"
-      />
-
-      <StyledRouteBasicInfoWrapper>
-        <StyledRouteMethod>{selectedMethod.type}</StyledRouteMethod>
-        <StyledRouteNameInput
-          type="text"
-          value={routeName}
-          onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
-        />
-      </StyledRouteBasicInfoWrapper>
-
-      <StyledRouteOptionWrapper>
-        <ParamsList
-          optionLabel="Parameters"
-          listItems={selectedMethod.params}
-          routeName={selectedRoute.name}
-          handleOpenModal={handleParamsModal}
-          paramType="param"
-          handleRemoveParam={handleRemoveParam}
+      <StyledMain>
+        <ParamsModal
+          isOpen={isParamsOpen}
+          handleModal={handleParamsModal}
+          routeName={
+            routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
+          }
+          handleNewParam={handleNewParam}
+          handleNewQuery={handleNewQuery}
+          modalType="param"
         />
 
-        <ParamsList
-          optionLabel="Queries"
-          listItems={selectedMethod.queries}
-          routeName={selectedRoute.name}
-          handleOpenModal={handleQueriesModal}
-          paramType="query"
-          handleRemoveParam={handleRemoveParam}
+        <ParamsModal
+          isOpen={isQueriesOpen}
+          handleModal={handleQueriesModal}
+          routeName={
+            routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
+          }
+          handleNewParam={handleNewParam}
+          handleNewQuery={handleNewQuery}
+          modalType="query"
         />
 
-        <RequestBodyBox
-          selectedMethodBody={selectedMethod.body}
-          handleChangeMethodBody={handleChangeMethodBody}
-        />
-      </StyledRouteOptionWrapper>
-    </StyledMain>
+        <StyledRouteBasicInfoWrapper>
+          <StyledRouteMethod>
+            {routes
+              .find((route) => route.id === selectedRoute.id)
+              ?.methods.find((method) => method.id === selectedMethod.id)
+              ?.type ?? ""}
+          </StyledRouteMethod>
+          <StyledRouteNameInput
+            type="text"
+            value={routeName}
+            onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
+          />
+        </StyledRouteBasicInfoWrapper>
+
+        <StyledRouteOptionWrapper>
+          <ParamsList
+            optionLabel="Parameters"
+            listItems={
+              routes
+                .find((route) => route.id === selectedRoute.id)
+                ?.methods.find((method) => method.id === selectedMethod.id)
+                ?.params ?? []
+            }
+            routeName={
+              routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
+            }
+            handleOpenModal={handleParamsModal}
+            paramType="param"
+            handleRemoveParam={handleRemoveParam}
+          />
+
+          <ParamsList
+            optionLabel="Queries"
+            listItems={
+              routes
+                .find((route) => route.id === selectedRoute.id)
+                ?.methods.find((method) => method.id === selectedMethod.id)
+                ?.queries ?? []
+            }
+            routeName={
+              routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
+            }
+            handleOpenModal={handleQueriesModal}
+            paramType="query"
+            handleRemoveParam={handleRemoveParam}
+          />
+
+          <RequestBodyBox
+            selectedMethodBody={
+              routes
+                .find((route) => route.id === selectedRoute.id)
+                ?.methods.find((method) => method.id === selectedMethod.id)
+                ?.body ?? ""
+            }
+            handleChangeMethodBody={handleChangeMethodBody}
+          />
+        </StyledRouteOptionWrapper>
+      </StyledMain>
+    </>
   );
 };
 
