@@ -111,18 +111,23 @@ const GenerateRouteFile = (route) => {
   coder.line(""); // Blank line
 
   methods.forEach((method) => {
-    const { type, body } = method;
+    const { type, body, params, queries } = method;
 
-    if (method.params.length > 0) {
-      method.params.forEach((param) => {
+    if (params.length > 0) {
+      params.forEach((param) => {
         coder.openBlock(
-          `router.${type}("/:${param.name}", ${route.name}Validation.${type}, (req, res, next) =>`
+          `router.${type.toLowerCase()}("/:${param.name}", ${
+            route.name
+          }Validation.${type}, (req, res, next) =>`
         );
         coder.line(`try {`);
-        coder.line(`const { ${param.name} } = req.params;`);
-        coder.line(""); // Blank line
+        coder.line(
+          `const { ${params
+            .map((item) => item.name)
+            .join(", ")} } = req.params;`
+        );
         coder.line("/* ROUTE LOGIC GOES HERE */");
-        coder.line(`return res.send(\`${param.name}: \${${param.name}}\`);`);
+        coder.line(`return res.send("Hello, world!");`);
         coder.line(`} catch (error) {`);
         coder.line("next(error);");
         coder.line("}");
@@ -131,28 +136,48 @@ const GenerateRouteFile = (route) => {
       });
     }
 
-    coder.openBlock(
-      `router.${type}("/", ${route.name}Validation.${type}, (req, res, next) =>`
-    );
-    coder.line("try {");
+    if (queries.length > 0) {
+      queries.forEach((query) => {
+        coder.openBlock(
+          `router.${type.toLowerCase()}("/:${query.name}", ${
+            route.name
+          }Validation.${type}, (req, res, next) =>`
+        );
+        coder.line(`try {`);
+        coder.line(
+          `const { ${queries
+            .map((item) => item.name)
+            .join(", ")} } = req.query;`
+        );
+        coder.line("/* ROUTE LOGIC GOES HERE */");
+        coder.line(`return res.send("Hello, world!");`);
+        coder.line(`} catch (error) {`);
+        coder.line("next(error);");
+        coder.line("}");
+        coder.closeBlock(");");
+        coder.line(""); // Blank line
+      });
+    }
+
     const keys = body ? [...Object.keys(JSON.parse(body))] : [];
-    if (!body) {
+    if (body) {
+      coder.openBlock(
+        `router.${type.toLowerCase()}("/:${route.name}", ${
+          route.name
+        }Validation.${type}, (req, res, next) =>`
+      );
+      coder.line(`try {`);
       coder.line(
         `const { ${keys.map((key) => `${key}`).join(", ")} } = req.body;`
       );
+      coder.line("/* ROUTE LOGIC GOES HERE */");
+      coder.line(`return res.send("Hello, world!");`);
+      coder.line(`} catch (error) {`);
+      coder.line("next(error);");
+      coder.line("}");
+      coder.closeBlock(");");
+      coder.line(""); // Blank line
     }
-    coder.line("/* ROUTE LOGIC GOES HERE */");
-    if (!body) {
-      const response = keys.map((key) => `${key}`).join(", ");
-      coder.line(`return res.send({${response}})`);
-    } else {
-      coder.line('return res.send("Route Hit!")');
-    }
-    coder.line("} catch (error) {");
-    coder.line("next(error);");
-    coder.line("}");
-    coder.closeBlock(");");
-    coder.line(""); // Blank line
   });
 
   coder.line("module.exports = router;");
@@ -165,18 +190,25 @@ const GenerateMiddlewareFile = (middleware) => {
   });
 
   const GenerateParams = (params, type) => {
+    const GetKeyValue = (option) => {
+      const { key, value } = option;
+      const keyName =
+        key === "minLength" || key === "maxLength" ? key.slice(0, 3) : key;
+      const keyValue = typeof value === "boolean" ? "" : value;
+      return { keyName, keyValue };
+    };
+
     coder.line(`[Segments.${type}]: Joi.object().keys({`);
     params.forEach((param) => {
       const { name, type, options } = param;
-      coder.line(
-        `${name}: Joi.${type}()${options.forEach((option) => {
-          const { key, value } = option;
-          const keyName =
-            key === "minLength" ? "min" : key === "maxLength" ? "max" : key;
-          const keyValue = typeof value === "boolean" ? "" : value;
-          return `.${keyName}(${keyValue}),`;
-        })}`
-      );
+
+      const left = `${name}: Joi.${type}()`;
+      const right = options.map((option) => {
+        const { keyName, keyValue } = GetKeyValue(option);
+        return `${keyName}(${keyValue})`;
+      });
+
+      coder.line(`${left}.${right.join(".")},`);
     });
     coder.line("}),");
   };
@@ -191,7 +223,7 @@ const GenerateMiddlewareFile = (middleware) => {
   coder.line('const { celebrate, Joi, Segments } = require("celebrate");');
   coder.line(""); // Line Break;
 
-  coder.openBlock(`const ${middleware.name}Validation = {`);
+  coder.openBlock(`const ${middleware.name}Validation =`);
   middleware.methods.forEach((method) => {
     const { params, queries, body, type } = method;
     if (params.length > 0 || queries.length > 0 || body) {
@@ -204,7 +236,7 @@ const GenerateMiddlewareFile = (middleware) => {
       coder.line("}),");
     }
   });
-  coder.closeBlock("};");
+  coder.closeBlock();
   coder.line(""); // Line Break;
   coder.line(`module.exports = ${middleware.name}Validation;`);
   return coder.code;

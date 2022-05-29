@@ -148,7 +148,7 @@ export const routesSlice = createSlice({
       const route = state.find((route) => route.id === routeId);
       const method = route.methods.find((method) => method.id === methodId);
       method.body = newValue;
-    },
+    }
   },
 });
 
