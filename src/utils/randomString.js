@@ -1,13 +1,8 @@
-const characters = "abcdefghijklmnopqrstuvwxyz";
-
-const generateString = (length) => {
-  let result = "";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  return result;
-};
+// Generates a random string of characters between a-z up to length amount
+const generateString = (length) =>
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]/g, "")
+    .substring(0, length);
 
 export default generateString;

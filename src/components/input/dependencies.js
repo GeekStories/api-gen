@@ -45,7 +45,7 @@ const Dependencies = () => {
       );
       const data = await response.json();
       setSearchResults(data.objects);
-    } catch (error) {}
+    } catch (error) {console.log(error)}
   };
 
   useEffect(() => {

@@ -5,6 +5,7 @@ const GenerateFilesContents = (dependencies, routes) => {
     defaults: [
       { id: "root_file_0", name: "app", ext: "js", contents: "" },
       { id: "root_file_1", name: "package", ext: "json", contents: "" },
+      { id: "root_file_2", name: "server", ext: "js", contents: "" },
     ],
     routes: routes.map((route, index) => ({
       id: `route_file_${index}`,
@@ -26,6 +27,9 @@ const GenerateFilesContents = (dependencies, routes) => {
   // App.js
   dir.defaults[0].contents = GenerateAppContents(routes);
 
+  // Server.js
+  dir.defaults[2].contents = GenerateServerFileContents();
+
   // Route Files
   dir.routes.forEach((route, index) => {
     route.contents = GenerateRouteFile(routes[index]);
@@ -35,8 +39,6 @@ const GenerateFilesContents = (dependencies, routes) => {
   dir.middleware.forEach((middleware, index) => {
     middleware.contents = GenerateMiddlewareFile(routes[index]);
   });
-
-  console.log(dir);
 
   return dir;
 };
@@ -78,23 +80,48 @@ const GenerateAppContents = (routes) => {
   return coder.code;
 };
 
+const GenerateServerFileContents = () => {
+  const coder = new Coder({
+    indentAmount: 2,
+  });
+
+  coder.line('const app = require("./app");');
+  coder.line("const port = process.env.PORT || 3000;");
+  coder.line(
+    // eslint-disable-next-line no-template-curly-in-string
+    "app.listen(port, () => console.log(`Listening on port ${port}`));"
+  );
+
+  return coder.code;
+};
+
 const GeneratePackageContents = (dependencies) => {
-  return `{
-    "name": "express",
-    "version": "1.0.0",
-    "description": "An Express Server - Template Generated @ api-gen.com",
-    "main": "server.js",
-    "scripts": {
-      "devStart": "nodemon server.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      ${dependencies
-        .map((dependency) => `"${dependency.name}": "^${dependency.version}"`)
-        .join(",")}
-    }
-  }`;
+  const coder = new Coder({
+    indentAmount: 2,
+  });
+
+  coder.openBlock();
+  coder.line('"name": "Express API",');
+  coder.line('"version": "1.0.0",');
+  coder.line('"private": "true",');
+  coder.line('"description": "",');
+  coder.line('"author": "",');
+  coder.line('"main": "server.js",');
+  coder.line('"scripts": { ');
+  coder.line('"devStart": "nodemon server.js",');
+  coder.line("},");
+  coder.line('"dependencies": {');
+  coder.line(
+    dependencies
+      .map((dependency) => `"${dependency.name}": "${dependency.version}"`)
+      .join(",")
+  );
+  coder.line("},");
+  coder.line('"license": "",');
+  coder.line('"devDependencies": {}');
+  coder.closeBlock();
+
+  return coder.code;
 };
 
 const GenerateRouteFile = (route) => {
