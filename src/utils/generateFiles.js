@@ -50,12 +50,10 @@ const GenerateAppContents = (routes) => {
 
   coder.line('const { errors } = require("celebrate");');
   coder.line(""); // Blank line
-
   coder.line('const cors = require("cors");');
   coder.line('const express = require("express");');
   coder.line("const app = express();");
   coder.line(""); // Blank line
-
   // Import required routes
   routes.map((route) =>
     coder.line(
@@ -63,17 +61,14 @@ const GenerateAppContents = (routes) => {
     )
   );
   coder.line(""); // Blank line
-
   coder.line("app.use(cors());");
   coder.line("app.use(express.json());");
   coder.line(""); // Blank line
-
   // Use all the imported routes
   routes.map((route) =>
-    coder.line(`app.use("/${route.name}", ${route.name}Route);`)
+    coder.line(`app.use("/api/${route.name}", ${route.name}Route);`)
   );
   coder.line(""); // Blank line
-
   coder.line("app.use(errors());");
   coder.line("module.exports = app;");
 
@@ -86,7 +81,7 @@ const GenerateServerFileContents = () => {
   });
 
   coder.line('const app = require("./app");');
-  coder.line("const port = process.env.PORT || 3000;");
+  coder.line("const port = process.env.PORT || 3001;");
   coder.line(
     // eslint-disable-next-line no-template-curly-in-string
     "app.listen(port, () => console.log(`Listening on port ${port}`));"
@@ -101,14 +96,14 @@ const GeneratePackageContents = (dependencies) => {
   });
 
   coder.openBlock();
-  coder.line('"name": "Express API",');
+  coder.line('"name": "express-api",');
   coder.line('"version": "1.0.0",');
   coder.line('"private": "true",');
   coder.line('"description": "",');
   coder.line('"author": "",');
   coder.line('"main": "server.js",');
   coder.line('"scripts": { ');
-  coder.line('"devStart": "nodemon server.js",');
+  coder.line('"devStart": "nodemon server.js"');
   coder.line("},");
   coder.line('"dependencies": {');
   coder.line(
@@ -131,21 +126,26 @@ const GenerateRouteFile = (route) => {
   coder.line('const express = require("express");');
   coder.line("const router = express.Router();");
   coder.line(""); // Blank line
-
   coder.line(
     `const ${route.name}Validation = require("../middleware/${route.name}.js");`
   );
   coder.line(""); // Blank line
-
   methods.forEach((method) => {
     const { type, body, params, queries } = method;
+
+    if (method.type !== "POST") {
+      coder.line(`router.${type.toLowerCase()}("/", (req, res) => {`);
+      coder.line('res.send("Hello World");');
+      coder.line("});");
+      coder.line(""); // Blank line
+    }
 
     if (params.length > 0) {
       params.forEach((param) => {
         coder.openBlock(
           `router.${type.toLowerCase()}("/:${param.name}", ${
             route.name
-          }Validation.${type}, (req, res, next) =>`
+          }Validation.${type.toLowerCase()}, (req, res, next) =>`
         );
         coder.line(`try {`);
         coder.line(
@@ -189,9 +189,9 @@ const GenerateRouteFile = (route) => {
     const keys = body ? [...Object.keys(JSON.parse(body))] : [];
     if (body) {
       coder.openBlock(
-        `router.${type.toLowerCase()}("/:${route.name}", ${
+        `router.${type.toLowerCase()}("/", ${
           route.name
-        }Validation.${type}, (req, res, next) =>`
+        }Validation.${type.toLowerCase()}, (req, res, next) =>`
       );
       coder.line(`try {`);
       coder.line(
@@ -229,7 +229,7 @@ const GenerateMiddlewareFile = (middleware) => {
     params.forEach((param) => {
       const { name, type, options } = param;
 
-      const left = `${name}: Joi.${type}()`;
+      const left = `${name.toLowerCase()}: Joi.${type}()`;
       const right = options.map((option) => {
         const { keyName, keyValue } = GetKeyValue(option);
         return `${keyName}(${keyValue})`;

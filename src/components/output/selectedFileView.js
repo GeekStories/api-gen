@@ -2,7 +2,7 @@ import CodeEditor from "@uiw/react-textarea-code-editor";
 import beautify from "js-beautify";
 import { useState, useEffect } from "react";
 
-const defaultFormatOptions = { indent_size: 2, space_in_empty_paren: true };
+const defaultFormatOptions = { indent_size: 2, space_in_empty_paren: true, brace_style: "preserve-inline" };
 
 const SelectedFileView = ({ selectedFile }) => {
   const [code, setCode] = useState(selectedFile.contents);
