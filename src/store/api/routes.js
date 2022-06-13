@@ -1,28 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import RandomString from "../../utils/randomString";
 
-const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
+const METHOD_TYPES = ["get", "post", "delete", "put", "patch"];
 
 export const routesSlice = createSlice({
   name: "routes",
   initialState: [],
   reducers: {
-    createRoute: (state) => {
+    createRoute: (state, action = {}) => {
+      let name = action?.payload?.name
+        ? action.payload.name === ""
+          ? `newroute${RandomString(3)}`
+          : action.payload.name
+        : `newroute${RandomString(3)}`;
+
       const routes = JSON.parse(JSON.stringify(state));
+      if (routes.find((route) => route.name === name)) {
+        console.log("route already exists");
+        name = `newroute${RandomString(3)}`;
+      }
+
       return [
         ...routes,
         {
           id: `route_${routes.length}`,
-          name: `newroute${RandomString(3)}`,
-          methods: [
-            {
-              id: `met_${routes.length}_0`,
-              type: "GET",
-              params: [],
-              queries: [],
-              body: null,
-            },
-          ],
+          name: name.replace(/[^a-z]/, ""),
+          methods: [],
         },
       ];
     },
@@ -31,7 +34,8 @@ export const routesSlice = createSlice({
       const routes = JSON.parse(JSON.stringify(state));
       return [...routes.filter((r) => r.id !== routeId)];
     },
-    updateRouteName: (state, action) => {
+    updateRouteName: (state, action = {}) => {
+      if (!action.payload) return state;
       const { routeId, newValue } = action.payload;
       const InvalidChars = newValue.match(/[^a-z]/g);
       if (InvalidChars) {
@@ -39,34 +43,42 @@ export const routesSlice = createSlice({
         return state;
       }
 
+      const routes = JSON.parse(JSON.stringify(state));
+      if (routes.find((route) => route.name === newValue)) {
+        console.log("route already exists");
+        return state;
+      }
+
       const route = state.find((route) => route.id === routeId);
       route.name = newValue;
     },
     createMethod: (state, action) => {
-      const { routeId } = action.payload;
+      const { type, routeId } = action.payload;
       const routes = JSON.parse(JSON.stringify(state));
+      console.log(type);
+
       const route = state.find((route) => route.id === routeId);
       const routeIndex = routes.findIndex((route) => route.id === routeId);
 
-      if (route.methods.length < 5) {
-        const difference = METHOD_TYPES.filter(
-          (type) =>
+      let difference = [];
+      if (!type && route.methods.length < 5) {
+        difference = METHOD_TYPES.filter(
+          (t) =>
             !route.methods
               .reduce((prev, curr) => prev + curr.type, [])
-              .includes(type)
+              .includes(t)
         );
-
-        route.methods = [
-          ...route.methods,
-          {
-            id: `met_${routeIndex}_${route.methods.length}`,
-            type: difference[0],
-            params: [],
-            queries: [],
-            body: null,
-          },
-        ];
       }
+      route.methods = [
+        ...route.methods,
+        {
+          id: `met_${routeIndex}_${route.methods.length}`,
+          type: type ? type : difference[0],
+          params: [],
+          queries: [],
+          body: null,
+        },
+      ];
     },
     updateMethodType: (state, action) => {
       const { routeId, methodId, newValue } = action.payload;
@@ -80,7 +92,7 @@ export const routesSlice = createSlice({
       );
 
       if (currentMethods.includes(newValue)) return state;
-      
+
       method.type = newValue;
     },
     removeMethod: (state, action) => {
@@ -93,6 +105,7 @@ export const routesSlice = createSlice({
     createParam: (state, action) => {
       const { routeId, methodId, newParam } = action.payload;
       const routes = JSON.parse(JSON.stringify(state));
+
       const route = state.find((route) => route.id === routeId);
       const routeIndex = routes.findIndex((route) => route.id === routeId);
       const methodIndex = route.methods.findIndex(
@@ -145,10 +158,12 @@ export const routesSlice = createSlice({
     },
     updateMethodBody: (state, action) => {
       const { routeId, methodId, newValue } = action.payload;
+      console.log(routeId, methodId, newValue);
       const route = state.find((route) => route.id === routeId);
+      console.log(current(route.methods));
       const method = route.methods.find((method) => method.id === methodId);
       method.body = newValue;
-    }
+    },
   },
 });
 

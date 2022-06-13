@@ -15,8 +15,9 @@ const FolderLabel = tw.label`flex items-center`;
 const Folder = tw.div`flex flex-col`;
 const Files = tw.div`pl-10`;
 const ControlsSocialsWrapper = tw.div`row-span-2`;
-const DirectoryControls = tw.div`row-span-2 m-auto grid grid-cols-2 gap-1 w-full px-2`;
+const DirectoryControls = tw.div`row-span-2 m-auto grid grid-cols-3 gap-1 w-full px-2`;
 const Button = tw.button`border-2 border-gray-400 px-3 text-sm font-medium transition-all ease-in-out delay-150 hover:bg-gray-300 hover:border-gray-400 rounded`;
+const HiddenInput = tw.input`hidden`;
 
 const SocialPlugs = tw.div`row-span-1 grid grid-cols-4 p-1`;
 const SocialLink = tw.a`m-auto`;
@@ -26,6 +27,8 @@ const OutputFileView = ({
   setSelectedFile,
   handleGenerateFiles,
   handleDownloadFiles,
+  handleImportFile,
+  inputFileRef,
 }) => {
   return (
     <Main>
@@ -71,6 +74,16 @@ const OutputFileView = ({
         <DirectoryControls>
           <Button onClick={handleGenerateFiles}>Generate File Contents</Button>
           <Button onClick={handleDownloadFiles}>Download Project!</Button>
+          <Button onClick={() => inputFileRef.current.click()}>
+            Import Apispec!
+          </Button>
+          <HiddenInput
+            type="file"
+            ref={inputFileRef}
+            onChange={handleImportFile}
+            id="file"
+            accept=".yaml"
+          />
         </DirectoryControls>
         <SocialPlugs>
           <SocialLink

@@ -10,6 +10,7 @@
     "@uiw/react-textarea-code-editor": "^2.0.1",
     "file-saver": "^2.0.5",
     "js-beautify": "^1.14.3",
+    "js-yaml": "^4.1.0",
     "jszip": "^3.9.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

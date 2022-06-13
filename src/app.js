@@ -1,8 +1,15 @@
 import tw from "tailwind-styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import MobileApp from "./mobile";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createRoute,
+  createMethod,
+  createParam,
+  createQuery,
+  updateMethodBody,
+} from "./store/api/routes";
 
 import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
@@ -11,16 +18,19 @@ import GenerateFilesContents from "./utils/generateFiles";
 
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
+import yaml from "js-yaml";
 
 const Main = tw.div`h-screen flex flex-col`;
 const UserInputArea = tw.div`grid grid-cols-12`;
 
 const App = () => {
+  const dispatch = useDispatch();
   const dependencies = useSelector((state) => state.dependencies);
   const routes = useSelector((state) => state.routes);
 
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
+  const inputFileRef = useRef(null);
 
   const handleSelectRoute = (id) => {
     setSelectedRoute(routes.find((route) => route.id === id));
@@ -79,6 +89,90 @@ const App = () => {
     saveAs(result, "project.zip");
   };
 
+  const fileReader = new FileReader();
+  const handleImportFile = (e) => {
+    fileReader.readAsText(e.target.files[0], "UTF-8");
+    fileReader.onload = (e) => {
+      yaml.loadAll(e.target.result, function (doc) {
+        console.log(doc);
+        const paths_keys = Object.keys(doc.paths);
+        paths_keys.forEach((key, routeIndex) => {
+          const path = doc.paths[key];
+          dispatch(createRoute({ name: key }));
+          const methods_keys = Object.keys(path);
+          methods_keys.forEach((method_key, methodIndex) => {
+            const method = path[method_key];
+            dispatch(
+              createMethod({ type: method_key, routeId: `route_${routeIndex}` })
+            );
+            if (method.parameters) {
+              method.parameters.forEach((parameter) => {
+                switch (parameter.in) {
+                  case "query":
+                    dispatch(
+                      createQuery({
+                        routeId: `route_${routeIndex}`,
+                        methodId: `met_${routeIndex}_${methodIndex}`,
+                        newQuery: {
+                          type: parameter.schema.type,
+                          name: parameter.name,
+                          options: Object.keys(parameter.schema)
+                            .filter((t) => t !== "type")
+                            .map((option) => {
+                              return {
+                                key: option,
+                                value: parameter.schema[option],
+                              };
+                            }),
+                        },
+                      })
+                    );
+                    break;
+                  case "path":
+                    dispatch(
+                      createParam({
+                        routeId: `route_${routeIndex}`,
+                        methodId: `met_${routeIndex}_${methodIndex}`,
+                        newParam: {
+                          type: parameter.schema.type,
+                          name: parameter.name,
+                          options: Object.keys(parameter.schema)
+                            .filter((t) => t !== "type")
+                            .map((option) => {
+                              return {
+                                key: option,
+                                value: parameter.schema[option],
+                              };
+                            }),
+                        },
+                      })
+                    );
+                    break;
+                  default:
+                    break;
+                }
+              });
+            }
+            if (method.requestBody) {
+              dispatch(
+                updateMethodBody({
+                  routeId: `route_${routeIndex}`,
+                  methodId: `met_${routeIndex}_${methodIndex}`,
+                  newValue: `{${Object.keys(
+                    method.requestBody.content["application/json"].schema
+                      .properties
+                  ).map((key) => {
+                    return `"${key}": "${method.requestBody.content["application/json"].schema.properties[key].type}"`;
+                  })}}`,
+                })
+              );
+            }
+          });
+        });
+      });
+    };
+  };
+
   return screenWidth > 1024 ? (
     <Main>
       <UserInputArea>
@@ -97,6 +191,8 @@ const App = () => {
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
         handleDownloadFiles={handleDownloadFiles}
+        handleImportFile={handleImportFile}
+        inputFileRef={inputFileRef}
       />
     </Main>
   ) : (

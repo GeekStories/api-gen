@@ -9,7 +9,7 @@ const RoutesTitle = tw.h1`text-lg text-center font-medium underline`;
 const List = tw.ol`flex flex-col gap-2 list-none p-1 max-h-[23rem] overflow-y-scroll`;
 const NewRouteButton = tw.button`h-10 w-full border-2 border-gray-300 p-2 my-1 rounded transition-all ease-in-out delay-150 hover:bg-gray-300 hover:border-gray-400`;
 
-const RoutesList = ({ handleSelectRoute, handleSelectMethod }) => {
+const RoutesList = ({ handleSelectRoute, handleSelectMethod, routeName, selectedRouteName }) => {
   const routes = useSelector((state) => state.routes);
   const dispatch = useDispatch();
 
@@ -25,12 +25,17 @@ const RoutesList = ({ handleSelectRoute, handleSelectMethod }) => {
                 route={route}
                 handleSelectRoute={handleSelectRoute}
                 handleSelectMethod={handleSelectMethod}
+                $selected={route.name === selectedRouteName}
               />
             );
           })}
       </List>
 
-      <NewRouteButton onClick={() => dispatch(createRoute())}>New Route</NewRouteButton>
+      <NewRouteButton
+        onClick={() => dispatch(createRoute({ name: routeName }))}
+      >
+        New Route
+      </NewRouteButton>
     </Main>
   );
 };

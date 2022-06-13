@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 const RouteMethodSelector = tw.select`col-span-1 border-2 w-full`;
 
-const METHOD_TYPES = ["GET", "POST", "DELETE", "PUT", "PATCH"];
+const METHOD_TYPES = ["get", "post", "delete", "put", "patch"];
 
 const MethodSelector = ({ routeId, methodId, currentMethod }) => {
   const dispatch = useDispatch();

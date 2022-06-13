@@ -47,7 +47,10 @@ const RouteForm = ({
 
   const handleRouteNameInput = (e, routeId) => {
     const newValue = e.target.value;
-    dispatch(updateRouteName({ routeId, newValue }));
+    if (routeId) {
+      dispatch(updateRouteName({ routeId, newValue }));
+    }
+
     setRouteName(newValue);
   };
 
@@ -118,6 +121,8 @@ const RouteForm = ({
       <RoutesList
         handleSelectRoute={handleSelectRoute}
         handleSelectMethod={handleSelectMethod}
+        routeName={routeName}
+        selectedRoutename={selectedRoute.name ?? ""}
       />
 
       <StyledMain>
@@ -153,7 +158,7 @@ const RouteForm = ({
           <StyledRouteNameInput
             type="text"
             value={routeName}
-            onChange={(e) => handleRouteNameInput(e, selectedRoute.id)}
+            onChange={(e) => handleRouteNameInput(e, selectedRoute.id ?? null)}
           />
         </StyledRouteBasicInfoWrapper>
 

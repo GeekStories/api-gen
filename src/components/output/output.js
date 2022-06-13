@@ -11,6 +11,8 @@ const Output = ({
   selectedFile,
   setSelectedFile,
   handleDownloadFiles,
+  handleImportFile,
+  inputFileRef
 }) => {
   return (
     <StyledMain>
@@ -19,6 +21,8 @@ const Output = ({
         setSelectedFile={setSelectedFile}
         handleGenerateFiles={handleGenerateFiles}
         handleDownloadFiles={handleDownloadFiles}
+        handleImportFile={handleImportFile}
+        inputFileRef={inputFileRef}
       />
       <SelectedFileView selectedFile={selectedFile} />
     </StyledMain>

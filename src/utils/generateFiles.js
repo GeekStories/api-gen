@@ -135,6 +135,13 @@ const GenerateRouteFile = (route) => {
 
     if (method.type !== "POST") {
       coder.line(`router.${type.toLowerCase()}("/", (req, res) => {`);
+      if (queries.length > 0) {
+        coder.line(
+          `const { ${queries
+            .map((item) => item.name)
+            .join(", ")} } = req.query;`
+        );
+      }
       coder.line('res.send("Hello World");');
       coder.line("});");
       coder.line(""); // Blank line
@@ -152,29 +159,6 @@ const GenerateRouteFile = (route) => {
           `const { ${params
             .map((item) => item.name)
             .join(", ")} } = req.params;`
-        );
-        coder.line("/* ROUTE LOGIC GOES HERE */");
-        coder.line(`return res.send("Hello, world!");`);
-        coder.line(`} catch (error) {`);
-        coder.line("next(error);");
-        coder.line("}");
-        coder.closeBlock(");");
-        coder.line(""); // Blank line
-      });
-    }
-
-    if (queries.length > 0) {
-      queries.forEach((query) => {
-        coder.openBlock(
-          `router.${type.toLowerCase()}("/:${query.name}", ${
-            route.name
-          }Validation.${type}, (req, res, next) =>`
-        );
-        coder.line(`try {`);
-        coder.line(
-          `const { ${queries
-            .map((item) => item.name)
-            .join(", ")} } = req.query;`
         );
         coder.line("/* ROUTE LOGIC GOES HERE */");
         coder.line(`return res.send("Hello, world!");`);

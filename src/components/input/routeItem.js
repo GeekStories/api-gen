@@ -11,8 +11,8 @@ import {
 } from "../../store/api/routes";
 import { useDispatch } from "react-redux";
 
-const RoutesListItem = tw.li`flex flex-col gap-1 text-lg font-mono border-b-2 border-gray-300 py-1 &:hover { cursor-pointer }`;
-const RouteInfoWrapper = tw.div`w-full flex justify-between`;
+const RoutesListItem = tw.li`flex flex-col gap-1 text-lg font-mono border-b-2 border-gray-300 py-1 &:hover { cursor-pointer } `;
+const RouteInfoWrapper = tw.div`${(p) => p.$selected ? "border-black border-2 border-solid" : ""} w-full flex justify-between`;
 const RoutePathLabel = tw.div`font-mono hover:cursor-pointer`;
 const NewMethodButton = tw(BiAddToQueue)`my-auto`;
 const DeleteMethodButton = tw(BsFillTrashFill)`w-full my-auto`;
