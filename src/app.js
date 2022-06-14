@@ -1,7 +1,6 @@
 import tw from "tailwind-styled-components";
-import { useState, useEffect, useRef } from "react";
-import MobileApp from "./mobile";
 
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createRoute,
@@ -10,15 +9,15 @@ import {
   createQuery,
   updateMethodBody,
 } from "./store/api/routes";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
+import yaml from "js-yaml";
 
+import MobileApp from "./mobile";
 import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
 import Output from "./components/output/output";
 import GenerateFilesContents from "./utils/generateFiles";
-
-import { saveAs } from "file-saver";
-import JSZip from "jszip";
-import yaml from "js-yaml";
 
 const Main = tw.div`h-screen flex flex-col`;
 const UserInputArea = tw.div`grid grid-cols-12`;
@@ -89,12 +88,11 @@ const App = () => {
     saveAs(result, "project.zip");
   };
 
-  const fileReader = new FileReader();
   const handleImportFile = (e) => {
+    const fileReader = new FileReader();
     fileReader.readAsText(e.target.files[0], "UTF-8");
     fileReader.onload = (e) => {
       yaml.loadAll(e.target.result, function (doc) {
-        console.log(doc);
         const paths_keys = Object.keys(doc.paths);
         paths_keys.forEach((key, routeIndex) => {
           const path = doc.paths[key];
@@ -162,7 +160,12 @@ const App = () => {
                     method.requestBody.content["application/json"].schema
                       .properties
                   ).map((key) => {
-                    return `"${key}": "${method.requestBody.content["application/json"].schema.properties[key].type}"`;
+                    const type =
+                      method.requestBody.content["application/json"].schema
+                        .properties[key].type;
+                    return `"${key}": "${
+                      type === "integer" ? "number" : type
+                    }"`;
                   })}}`,
                 })
               );

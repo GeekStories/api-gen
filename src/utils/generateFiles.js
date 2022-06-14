@@ -204,7 +204,9 @@ const GenerateMiddlewareFile = (middleware) => {
     const GetKeyValue = (option) => {
       const { key, value } = option;
       const keyName =
-        key === "minLength" || key === "maxLength" ? key.slice(0, 3) : key;
+        key === "minLength" || key === "maxLength" || "minumum" || "maximum"
+          ? key.slice(0, 3)
+          : key;
       const keyValue = typeof value === "boolean" ? "" : value;
       return { keyName, keyValue };
     };
@@ -213,7 +215,9 @@ const GenerateMiddlewareFile = (middleware) => {
     params.forEach((param) => {
       const { name, type, options } = param;
 
-      const left = `${name.toLowerCase()}: Joi.${type}()`;
+      const left = `${name.toLowerCase()}: Joi.${
+        type === "integer" ? "number" : type
+      }()`;
       const right = options.map((option) => {
         const { keyName, keyValue } = GetKeyValue(option);
         return `${keyName}(${keyValue})`;
@@ -227,7 +231,11 @@ const GenerateMiddlewareFile = (middleware) => {
   const GenerateBody = (body) => {
     const keys = [...Object.keys(body)];
     coder.line(`[Segments.BODY]: Joi.object().keys({`);
-    keys.forEach((key) => coder.line(`${key}: Joi.${body[[key]]}(),`));
+    keys.forEach((key) =>
+      coder.line(
+        `${key}: Joi.${body[[key]] === "integer" ? "number" : body[[key]]}(),`
+      )
+    );
     coder.line("}),");
   };
 
@@ -238,7 +246,7 @@ const GenerateMiddlewareFile = (middleware) => {
   middleware.methods.forEach((method) => {
     const { params, queries, body, type } = method;
     if (params.length > 0 || queries.length > 0 || body) {
-      coder.line(`${type.toUpperCase()}: celebrate({`);
+      coder.line(`${type}: celebrate({`);
 
       if (params.length > 0) GenerateParams(params, "PARAMS");
       if (queries.length > 0) GenerateParams(queries, "QUERY");

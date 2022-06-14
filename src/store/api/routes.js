@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import RandomString from "../../utils/randomString";
 
 const METHOD_TYPES = ["get", "post", "delete", "put", "patch"];
@@ -55,7 +55,6 @@ export const routesSlice = createSlice({
     createMethod: (state, action) => {
       const { type, routeId } = action.payload;
       const routes = JSON.parse(JSON.stringify(state));
-      console.log(type);
 
       const route = state.find((route) => route.id === routeId);
       const routeIndex = routes.findIndex((route) => route.id === routeId);
@@ -158,9 +157,7 @@ export const routesSlice = createSlice({
     },
     updateMethodBody: (state, action) => {
       const { routeId, methodId, newValue } = action.payload;
-      console.log(routeId, methodId, newValue);
       const route = state.find((route) => route.id === routeId);
-      console.log(current(route.methods));
       const method = route.methods.find((method) => method.id === methodId);
       method.body = newValue;
     },
