@@ -19,6 +19,7 @@ const Output = ({
       <OutputFileView
         projectFiles={projectFiles}
         setSelectedFile={setSelectedFile}
+        selectedFile={selectedFile}
         handleGenerateFiles={handleGenerateFiles}
         handleDownloadFiles={handleDownloadFiles}
         handleImportFile={handleImportFile}

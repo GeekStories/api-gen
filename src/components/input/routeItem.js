@@ -11,12 +11,13 @@ import {
 } from "../../store/api/routes";
 import { useDispatch } from "react-redux";
 
-const RoutesListItem = tw.li`flex flex-col gap-1 text-lg font-mono border-b-2 border-gray-300 py-1 &:hover { cursor-pointer } `;
-const RouteInfoWrapper = tw.div`${(p) => p.$selected ? "border-black border-2 border-solid" : ""} w-full flex justify-between`;
-const RoutePathLabel = tw.div`font-mono hover:cursor-pointer`;
-const NewMethodButton = tw(BiAddToQueue)`my-auto`;
-const DeleteMethodButton = tw(BsFillTrashFill)`w-full my-auto`;
-const EditMethodButton = tw(AiFillEdit)`w-full my-auto`;
+const RoutesListItem = tw.li`flex flex-col gap-1 text-lg font-mono border-b-2 border-gray-300 py-1`;
+const RouteInfoWrapper = tw.div`w-full flex justify-between`;
+const RoutePathLabel = tw.div`font-mono hover:cursor-pointer hover:underline`;
+const NewMethodButton = tw(BiAddToQueue)`my-auto hover:cursor-pointer`;
+const DeleteRouteButton = tw(BsFillTrashFill)`my-auto hover:cursor-pointer`;
+const DeleteMethodButton = tw(BsFillTrashFill)`w-full my-auto hover:cursor-pointer`;
+const EditMethodButton = tw(AiFillEdit)`w-full my-auto hover:cursor-pointer`;
 const RouteControls = tw.div`flex justify-end my-auto gap-2 pr-1`;
 const Method = tw.div`grid grid-cols-2 gap-2`;
 const MethodControls = tw.div`flex mr-auto`;
@@ -25,15 +26,13 @@ const RouteItem = ({ route, handleSelectRoute, handleSelectMethod }) => {
   const dispatch = useDispatch();
   return (
     <RoutesListItem>
-      <RouteInfoWrapper>
-        <RoutePathLabel
-          onClick={() => handleSelectRoute(route.id)}
-        >{`/${route.name}`}</RoutePathLabel>
+      <RouteInfoWrapper onClick={() => handleSelectRoute(route.id)}>
+        <RoutePathLabel>{`/${route.name}`}</RoutePathLabel>
         <RouteControls>
           <NewMethodButton
             onClick={() => dispatch(createMethod({ routeId: route.id }))}
           />
-          <BsFillTrashFill
+          <DeleteRouteButton
             onClick={() => dispatch(removeRoute({ routeId: route.id }))}
           />
         </RouteControls>

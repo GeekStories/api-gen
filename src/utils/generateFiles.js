@@ -133,7 +133,7 @@ const GenerateRouteFile = (route) => {
   methods.forEach((method) => {
     const { type, body, params, queries } = method;
 
-    if (method.type !== "POST") {
+    if (method.type !== "post") {
       coder.line(`router.${type.toLowerCase()}("/", (req, res) => {`);
       if (queries.length > 0) {
         coder.line(

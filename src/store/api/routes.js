@@ -8,11 +8,11 @@ export const routesSlice = createSlice({
   initialState: [],
   reducers: {
     createRoute: (state, action = {}) => {
-      let name = action?.payload?.name
-        ? action.payload.name === ""
-          ? `newroute${RandomString(3)}`
-          : action.payload.name
-        : `newroute${RandomString(3)}`;
+      let name = `newroute${RandomString(3)}`;
+
+      if (action?.payload?.name !== "") {
+        name = action.payload.name;
+      }
 
       const routes = JSON.parse(JSON.stringify(state));
       if (routes.find((route) => route.name === name)) {

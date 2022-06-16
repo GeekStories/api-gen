@@ -10,7 +10,7 @@ const ParamsList = ({
   optionLabel,
   listItems,
   routeName,
-  handleOpenModal,
+  handleModal,
   paramType,
   handleRemoveParam,
 }) => {
@@ -29,7 +29,9 @@ const ParamsList = ({
               />
             ))
           : null}
-        <StyledNewItemButton onClick={handleOpenModal}>New</StyledNewItemButton>
+        <StyledNewItemButton onClick={() => handleModal(paramType)}>
+          New
+        </StyledNewItemButton>
       </StyledList>
     </>
   );

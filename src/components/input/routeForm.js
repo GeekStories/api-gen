@@ -14,12 +14,12 @@ import {
 import RoutesList from "./routesList";
 import ParamsList from "./paramsList";
 import RequestBodyBox from "./requestBodyBox";
-import ParamsModal from "../modals/paramsModal";
+import Modal from "../modals/modal";
 
 const StyledMain = tw.div`xl:col-span-8 col-span-7 grid grid-cols-1 p-1 border-l-[1px] border-b-[1px] border-black`;
 const StyledRouteBasicInfoWrapper = tw.div`grid grid-cols-12 bg-slate-200`;
 const StyledRouteMethod = tw.span`xl:col-span-2 col-span-3 border-r-2 border-gray-100 text-center text-lg tracking-wider rounded-l-md hover:bg-slate-300 hover:cursor-pointer transition ease-in-out delay-75`;
-const StyledRouteNameInput = tw.input`xl:col-span-9 col-span-8 pl-2 h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100`;
+const StyledRouteNameInput = tw.input`xl:col-span-10 col-span-9 pl-2 h-8 w-full bg-slate-200 text-lg text-gray-600 focus:outline-none transition ease-in-out delay-100`;
 const StyledRouteOptionWrapper = tw.div`flex flex-col`;
 
 const RouteForm = ({
@@ -32,22 +32,18 @@ const RouteForm = ({
   const dispatch = useDispatch();
 
   const [routeName, setRouteName] = useState("");
-  const [isParamsOpen, setParamsModal] = useState(false);
-  const [isQueriesOpen, setQueriesModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("param");
 
-  const handleParamsModal = () => {
-    if (isQueriesOpen) setQueriesModal(false);
-    setParamsModal(!isParamsOpen);
-  };
-
-  const handleQueriesModal = () => {
-    if (isParamsOpen) setParamsModal(false);
-    setQueriesModal(!isQueriesOpen);
+  const handleModal = (type) => {
+    setModalType((old) => (old = type));
+    setIsModalOpen(!isModalOpen);
   };
 
   const handleRouteNameInput = (e, routeId) => {
     const newValue = e.target.value;
-    if (routeId) {
+
+    if (routeId && newValue !== "") {
       dispatch(updateRouteName({ routeId, newValue }));
     }
 
@@ -126,26 +122,14 @@ const RouteForm = ({
       />
 
       <StyledMain>
-        <ParamsModal
-          isOpen={isParamsOpen}
-          handleModal={handleParamsModal}
+        <Modal
+          isOpen={isModalOpen}
+          handleModal={handleModal}
           routeName={
             routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
           }
-          handleNewParam={handleNewParam}
-          handleNewQuery={handleNewQuery}
-          modalType="param"
-        />
-
-        <ParamsModal
-          isOpen={isQueriesOpen}
-          handleModal={handleQueriesModal}
-          routeName={
-            routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
-          }
-          handleNewParam={handleNewParam}
-          handleNewQuery={handleNewQuery}
-          modalType="query"
+          createNew={modalType === "param" ? handleNewParam : handleNewQuery}
+          modalType={modalType}
         />
 
         <StyledRouteBasicInfoWrapper>
@@ -157,6 +141,7 @@ const RouteForm = ({
           </StyledRouteMethod>
           <StyledRouteNameInput
             type="text"
+            id="routeNameInput"
             value={routeName}
             onChange={(e) => handleRouteNameInput(e, selectedRoute.id ?? null)}
           />
@@ -174,7 +159,7 @@ const RouteForm = ({
             routeName={
               routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
             }
-            handleOpenModal={handleParamsModal}
+            handleModal={handleModal}
             paramType="param"
             handleRemoveParam={handleRemoveParam}
           />
@@ -190,7 +175,7 @@ const RouteForm = ({
             routeName={
               routes.find((route) => route.id === selectedRoute.id)?.name ?? ""
             }
-            handleOpenModal={handleQueriesModal}
+            handleModal={handleModal}
             paramType="query"
             handleRemoveParam={handleRemoveParam}
           />

@@ -49,8 +49,27 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState({});
   const [projectFiles, setFiles] = useState({
     defaults: [
-      { id: "root_file_0", name: "app", ext: "js", contents: "" },
-      { id: "root_file_1", name: "package", ext: "json", contents: "" },
+      {
+        id: "root_file_0",
+        name: "app",
+        ext: "js",
+        contents:
+          'const { errors } = require("celebrate");\n\nconst cors = require("cors");\nconst express = require("express");\nconst app = express();\n\n\napp.use(cors());\napp.use(express.json());\n\n\napp.use(errors());\nmodule.exports = app;\n',
+      },
+      {
+        id: "root_file_1",
+        name: "package",
+        ext: "json",
+        contents:
+          ' {\n\t\t"name": "express-api",\n\t\t"version": "1.0.0",\n\t\t"private": "true",\n\t\t"description": "",\n\t\t"author": "",\n\t\t"main": "server.js",\n\t\t"scripts": { \n\t\t"devStart": "nodemon server.js"\n\t\t},\n\t\t"dependencies": {\n\t\t"express": "4.17.3","cors": "2.8.5","nodemon": "2.0.15","celebrate": "15.0.1"\n\t\t},\n\t\t"license": "",\n\t\t"devDependencies": {}\n}\n',
+      },
+      {
+        id: "root_file_2",
+        name: "server",
+        ext: "js",
+        contents:
+          'const app = require("./app");\nconst port = process.env.PORT || 3001;\napp.listen(port, () => console.log(`Listening on port ${port}`));\n',
+      },
     ],
     routes: [],
     middleware: [],

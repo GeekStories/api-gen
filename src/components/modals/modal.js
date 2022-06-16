@@ -30,12 +30,11 @@ const ModalControlsWrapper = tw.div`grid grid-cols-2 gap-1`;
 const ModalControl = tw.button`rounded border-2 border-gray-300 text-lg`;
 const RoutePreview = tw.p`flex mx-auto text-2xl p-1 font-mono`;
 
-const ParamsModal = ({
+const Modal = ({
   isOpen,
   handleModal,
   routeName = "",
-  handleNewParam,
-  handleNewQuery,
+  createNew,
   modalType,
 }) => {
   const [paramName, setParamName] = useState("example");
@@ -395,24 +394,11 @@ const ParamsModal = ({
   };
 
   const handleCreateParam = () => {
-    switch (modalType) {
-      case "param":
-        handleNewParam({
-          options: validationOptions,
-          type: selectedType,
-          name: paramName,
-        });
-        break;
-      case "query":
-        handleNewQuery({
-          options: validationOptions,
-          type: selectedType,
-          name: paramName,
-        });
-        break;
-      default:
-        break;
-    }
+    createNew({
+      options: validationOptions,
+      type: selectedType,
+      name: paramName,
+    });
 
     handleCloseModal();
   };
@@ -469,7 +455,11 @@ const ParamsModal = ({
           onChange={handleUpdateName}
         />
 
-        <TypeSelect defaultValue={"string"} onChange={handleChangeType}>
+        <TypeSelect
+          defaultValue={"string"}
+          value={selectedType}
+          onChange={handleChangeType}
+        >
           <option value="string">string</option>
           <option value="number">number</option>
         </TypeSelect>
@@ -523,4 +513,4 @@ const ParamsModal = ({
   );
 };
 
-export default ParamsModal;
+export default Modal;
