@@ -456,7 +456,6 @@ const Modal = ({
         />
 
         <TypeSelect
-          defaultValue={"string"}
           value={selectedType}
           onChange={handleChangeType}
         >

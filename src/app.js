@@ -198,7 +198,7 @@ const App = () => {
   return screenWidth > 1024 ? (
     <Main>
       <UserInputArea>
-        <Dependencies />
+        <Dependencies dependencies={dependencies} />
         <RouteForm
           handleSelectRoute={handleSelectRoute}
           handleSelectMethod={handleSelectMethod}
