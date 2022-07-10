@@ -9,6 +9,7 @@ import {
   createQuery,
   updateMethodBody,
 } from "./store/api/routes";
+
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import yaml from "js-yaml";
@@ -18,34 +19,22 @@ import Dependencies from "./components/input/dependencies";
 import RouteForm from "./components/input/routeForm";
 import Output from "./components/output/output";
 import GenerateFilesContents from "./utils/generateFiles";
+import ContactModal from "./components/modals/contactModal";
 
 const Main = tw.div`h-screen flex flex-col`;
 const UserInputArea = tw.div`grid grid-cols-12`;
 
 const App = () => {
   const dispatch = useDispatch();
+
   const dependencies = useSelector((state) => state.dependencies);
   const routes = useSelector((state) => state.routes);
+  const inputFileRef = useRef(null);
 
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
-  const inputFileRef = useRef(null);
 
-  const handleSelectRoute = (id) => {
-    setSelectedRoute(routes.find((route) => route.id === id));
-    setSelectedMethod({});
-  };
-
-  const handleSelectMethod = (methodId, routeId) => {
-    handleSelectRoute(routeId);
-
-    setSelectedMethod(
-      routes
-        .find((route) => route.id === routeId)
-        .methods.find((method) => method.id === methodId)
-    );
-  };
-
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState({});
   const [projectFiles, setFiles] = useState({
     defaults: [
@@ -68,6 +57,7 @@ const App = () => {
         name: "server",
         ext: "js",
         contents:
+          // eslint-disable-next-line no-template-curly-in-string
           'const app = require("./app");\nconst port = process.env.PORT || 3001;\napp.listen(port, () => console.log(`Listening on port ${port}`));\n',
       },
     ],
@@ -75,7 +65,24 @@ const App = () => {
     middleware: [],
   });
 
-  const screenWidth = useWindowSize();
+  const handleSelectRoute = (id) => {
+    setSelectedRoute(routes.find((route) => route.id === id));
+    setSelectedMethod({});
+  };
+
+  const handleSelectMethod = (methodId, routeId) => {
+    handleSelectRoute(routeId);
+
+    setSelectedMethod(
+      routes
+        .find((route) => route.id === routeId)
+        .methods.find((method) => method.id === methodId)
+    );
+  };
+
+  const handleOpenContact = () => {
+    setIsContactModalOpen(!isContactModalOpen);
+  };
 
   const handleGenerateFiles = () => {
     const dir = GenerateFilesContents(dependencies, routes);
@@ -195,8 +202,14 @@ const App = () => {
     };
   };
 
+  const screenWidth = useWindowSize();
+
   return screenWidth > 1024 ? (
     <Main>
+      <ContactModal
+        isOpen={isContactModalOpen}
+        handleOpenContact={handleOpenContact}
+      />
       <UserInputArea>
         <Dependencies dependencies={dependencies} />
         <RouteForm
@@ -212,6 +225,7 @@ const App = () => {
         handleGenerateFiles={handleGenerateFiles}
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
+        handleOpenContact={handleOpenContact}
         handleDownloadFiles={handleDownloadFiles}
         handleImportFile={handleImportFile}
         inputFileRef={inputFileRef}

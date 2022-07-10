@@ -4,9 +4,9 @@ import File from "./file";
 import { FcFolder } from "react-icons/fc";
 import {
   TiSocialTwitter,
-  TiSocialLinkedin,
   TiSocialGithub,
 } from "react-icons/ti";
+import { GrContactInfo } from "react-icons/gr";
 import { CgWebsite } from "react-icons/cg";
 
 const Main = tw.div`min-w-[20.07rem] max-w-[40rem] grid grid-rows-6 p-1 border-r-[1px] border-black`;
@@ -27,6 +27,7 @@ const OutputFileView = ({
   projectFiles,
   setSelectedFile,
   selectedFile,
+  handleOpenContact,
   handleGenerateFiles,
   handleDownloadFiles,
   handleImportFile,
@@ -98,14 +99,6 @@ const OutputFileView = ({
           </SocialLink>
 
           <SocialLink
-            href="https://www.linkedin.com/in/damon-pitkethley/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <TiSocialLinkedin size="2em" />
-          </SocialLink>
-
-          <SocialLink
             href="https://github.com/geekstories"
             target="_blank"
             rel="noreferrer"
@@ -119,6 +112,9 @@ const OutputFileView = ({
             rel="noreferrer"
           >
             <CgWebsite size="2em" />
+          </SocialLink>
+          <SocialLink href="#" onClick={handleOpenContact}>
+            <GrContactInfo size="2em" />
           </SocialLink>
         </SocialPlugs>
       </ControlsSocialsWrapper>

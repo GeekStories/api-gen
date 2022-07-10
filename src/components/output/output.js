@@ -10,6 +10,7 @@ const Output = ({
   handleGenerateFiles,
   selectedFile,
   setSelectedFile,
+  handleOpenContact,
   handleDownloadFiles,
   handleImportFile,
   inputFileRef
@@ -20,6 +21,7 @@ const Output = ({
         projectFiles={projectFiles}
         setSelectedFile={setSelectedFile}
         selectedFile={selectedFile}
+        handleOpenContact={handleOpenContact}
         handleGenerateFiles={handleGenerateFiles}
         handleDownloadFiles={handleDownloadFiles}
         handleImportFile={handleImportFile}
