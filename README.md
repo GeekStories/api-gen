@@ -2,15 +2,10 @@
 
 ![Main Screen](./_readme/screenshot1.png)
 
-A Simple React App that generates a boilerplate Express API Server using a simple form input style interface.
+Generate a boilerplate Express API Server
 
 ## Project Status
 1 May 2022 v1.0.0 - First Release
-
-## Requirement
-
-- Node
-- Npm
 
 ## Usage
 
@@ -39,6 +34,7 @@ Open `http://localhost:3000` and enjoy!
     - [React DOM](https://reactjs.org/docs/react-dom.html)
     - [React Icons](https://react-icons.github.io/react-icons/)
     - [React Scripts](https://www.npmjs.com/package/react-scripts)
+    - [Redux Toolkit](https://redux-toolkit.js.org/)
   - Styling:
     - [TailwindCSS v3](https://tailwindcss.com/)
     - [Tailwind Styled Components](https://www.npmjs.com/package/tailwind-styled-components)
@@ -46,3 +42,5 @@ Open `http://localhost:3000` and enjoy!
     - [React Textarea Code Editor](https://www.npmjs.com/package/@uiw/react-textarea-code-editor)
     - [Js Beautify](https://www.npmjs.com/package/js-beautify)
     - [Js Zip](https://www.npmjs.com/package/jszip)
+    - [File Saver](https://www.npmjs.com/package/file-saver)
+    - [littlethings/Coder](https://www.npmjs.com/package/@littlethings/coder)
