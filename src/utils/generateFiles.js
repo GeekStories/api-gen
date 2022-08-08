@@ -204,7 +204,10 @@ const GenerateMiddlewareFile = (middleware) => {
     const GetKeyValue = (option) => {
       const { key, value } = option;
       const keyName =
-        key === "minLength" || key === "maxLength" || "minumum" || "maximum"
+        key === "minLength" ||
+        key === "maxLength" ||
+        key === "minumum" ||
+        key === "maximum"
           ? key.slice(0, 3)
           : key;
       const keyValue = typeof value === "boolean" ? "" : value;
