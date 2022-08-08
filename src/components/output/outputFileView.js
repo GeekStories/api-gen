@@ -2,19 +2,15 @@ import tw from "tailwind-styled-components";
 
 import File from "./file";
 import { FcFolder } from "react-icons/fc";
-import {
-  TiSocialTwitter,
-  TiSocialGithub,
-} from "react-icons/ti";
+import { TiSocialTwitter, TiSocialGithub } from "react-icons/ti";
 import { GrContactInfo } from "react-icons/gr";
 import { CgWebsite } from "react-icons/cg";
 
-const Main = tw.div`min-w-[20.07rem] max-w-[40rem] grid grid-rows-6 p-1 border-r-[1px] border-black`;
+const Main = tw.div`min-w-[20.07rem] max-w-2xl grid grid-rows-6 p-1 border-r-[1px] border-black`;
 const RootFolder = tw.div`row-span-5 h-96 text-xl overflow-y-scroll`;
 const FolderLabel = tw.label`flex items-center`;
 const Folder = tw.div`flex flex-col`;
-const Files = tw.div`pl-10 ${(p) =>
-  p.$selected ? "bg-gray-200" : "bg-white"}`;
+const Files = tw.div`pl-10`;
 const ControlsSocialsWrapper = tw.div`row-span-2`;
 const DirectoryControls = tw.div`row-span-2 m-auto grid grid-cols-3 gap-1 w-full px-2`;
 const Button = tw.button`border-2 border-gray-400 px-3 text-sm font-medium transition-all ease-in-out delay-150 hover:bg-gray-300 hover:border-gray-400 rounded`;
@@ -43,14 +39,17 @@ const OutputFileView = ({
           </FolderLabel>
           <Files>
             {projectFiles &&
-              projectFiles.middleware.map((item) => (
-                <File
-                  key={item.id}
-                  file={item}
-                  setSelectedFile={setSelectedFile}
-                  $selected={selectedFile.name === item.name}
-                />
-              ))}
+              projectFiles.middleware.map((item) => {
+                item.id = `${item.id}_middleware`;
+                return (
+                  <File
+                    key={`${item.id}_middleware`}
+                    file={item}
+                    setSelectedFile={setSelectedFile}
+                    selected={selectedFile.id === item.id}
+                  />
+                );
+              })}
           </Files>
         </Folder>
         <Folder>
@@ -60,18 +59,27 @@ const OutputFileView = ({
           </FolderLabel>
           <Files>
             {projectFiles &&
-              projectFiles.routes.map((item) => (
-                <File
-                  key={item.id}
-                  file={item}
-                  setSelectedFile={setSelectedFile}
-                />
-              ))}
+              projectFiles.routes.map((item) => {
+                item.id = `${item.id}_routes`;
+                return (
+                  <File
+                    key={`${item.id}_routes`}
+                    file={item}
+                    setSelectedFile={setSelectedFile}
+                    selected={selectedFile.id === item.id}
+                  />
+                );
+              })}
           </Files>
         </Folder>
         {projectFiles &&
           projectFiles.defaults.map((item) => (
-            <File key={item.id} file={item} setSelectedFile={setSelectedFile} />
+            <File
+              key={item.id}
+              file={item}
+              setSelectedFile={setSelectedFile}
+              selected={selectedFile.id === item.id}
+            />
           ))}
       </RootFolder>
       <ControlsSocialsWrapper>

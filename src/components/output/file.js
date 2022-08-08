@@ -2,13 +2,20 @@ import tw from "tailwind-styled-components";
 import { FaFileCode } from "react-icons/fa";
 
 const StyledFileLabel = tw.div`flex`;
-const StyledFileName = tw.p`hover:cursor-pointer text-lg`;
+const Icon = tw(FaFileCode)`my-auto`;
+const StyledFileName = tw.p`${(p) =>
+  p.$selected === true
+    ? "bg-gray-500"
+    : "bg-white"} hover:cursor-pointer text-lg hover:bg-gray-300 rounded-lg p-1`;
 
-const File = ({ file, setSelectedFile }) => {
+const File = ({ file, setSelectedFile, selected }) => {
   return (
     <StyledFileLabel>
-      <FaFileCode />{" "}
-      <StyledFileName onClick={() => setSelectedFile(file)}>
+      <Icon />{" "}
+      <StyledFileName
+        onClick={() => setSelectedFile(file)}
+        $selected={selected}
+      >
         {`${file.name}.${file.ext}`}
       </StyledFileName>
     </StyledFileLabel>

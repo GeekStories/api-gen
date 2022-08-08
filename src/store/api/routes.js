@@ -23,7 +23,7 @@ export const routesSlice = createSlice({
       return [
         ...routes,
         {
-          id: `route_${routes.length}`,
+          id: (Math.random() * (Math.random() * 100000)).toFixed(),
           name: name.replace(/[^a-z]/, ""),
           methods: [],
         },
