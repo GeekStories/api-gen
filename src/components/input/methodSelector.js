@@ -1,4 +1,3 @@
-import { useState } from "react";
 import tw from "tailwind-styled-components";
 
 import { updateMethodType } from "../../store/api/routes";
@@ -10,16 +9,14 @@ const METHOD_TYPES = ["get", "post", "delete", "put", "patch"];
 
 const MethodSelector = ({ routeId, methodId, currentMethod }) => {
   const dispatch = useDispatch();
-  const [routeMethod, setRouteMethod] = useState(currentMethod);
 
   const handleChangeMethod = (e, routeId, methodId) => {
     dispatch(updateMethodType({ routeId, methodId, newValue: e.target.value }));
-    setRouteMethod(e.target.value);
   };
 
   return (
     <RouteMethodSelector
-      value={routeMethod}
+      value={currentMethod}
       onChange={(e) => handleChangeMethod(e, routeId, methodId)}
     >
       {METHOD_TYPES.map((item, index) => (

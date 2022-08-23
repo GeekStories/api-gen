@@ -2,17 +2,11 @@ import tw from "tailwind-styled-components";
 
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  createRoute,
-  createMethod,
-  createParam,
-  createQuery,
-  updateMethodBody,
-} from "./store/api/routes";
+
+import handleImport from "./utils/handleImport";
 
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
-import yaml from "js-yaml";
 
 import MobileApp from "./mobile";
 import Dependencies from "./components/input/dependencies";
@@ -85,8 +79,7 @@ const App = () => {
   };
 
   const handleGenerateFiles = () => {
-    const dir = GenerateFilesContents(dependencies, routes);
-    setFiles(dir);
+    setFiles(GenerateFilesContents(dependencies, routes));
     setSelectedFile({}); // Reset selectedFile
   };
 
@@ -114,97 +107,11 @@ const App = () => {
     saveAs(result, "project.zip");
   };
 
-  const handleImportFile = (e) => {
-    const fileReader = new FileReader();
-    fileReader.readAsText(e.target.files[0], "UTF-8");
-    fileReader.onload = (e) => {
-      yaml.loadAll(e.target.result, function (doc) {
-        const paths_keys = Object.keys(doc.paths);
-        paths_keys.forEach((key, routeIndex) => {
-          const path = doc.paths[key];
-          dispatch(createRoute({ name: key }));
-          const methods_keys = Object.keys(path);
-          methods_keys.forEach((method_key, methodIndex) => {
-            const method = path[method_key];
-            dispatch(
-              createMethod({ type: method_key, routeId: `route_${routeIndex}` })
-            );
-            if (method.parameters) {
-              method.parameters.forEach((parameter) => {
-                switch (parameter.in) {
-                  case "query":
-                    dispatch(
-                      createQuery({
-                        routeId: `route_${routeIndex}`,
-                        methodId: `met_${routeIndex}_${methodIndex}`,
-                        newQuery: {
-                          type: parameter.schema.type,
-                          name: parameter.name,
-                          options: Object.keys(parameter.schema)
-                            .filter((t) => t !== "type")
-                            .map((option) => {
-                              return {
-                                key: option,
-                                value: parameter.schema[option],
-                              };
-                            }),
-                        },
-                      })
-                    );
-                    break;
-                  case "path":
-                    dispatch(
-                      createParam({
-                        routeId: `route_${routeIndex}`,
-                        methodId: `met_${routeIndex}_${methodIndex}`,
-                        newParam: {
-                          type: parameter.schema.type,
-                          name: parameter.name,
-                          options: Object.keys(parameter.schema)
-                            .filter((t) => t !== "type")
-                            .map((option) => {
-                              return {
-                                key: option,
-                                value: parameter.schema[option],
-                              };
-                            }),
-                        },
-                      })
-                    );
-                    break;
-                  default:
-                    break;
-                }
-              });
-            }
-            if (method.requestBody) {
-              dispatch(
-                updateMethodBody({
-                  routeId: `route_${routeIndex}`,
-                  methodId: `met_${routeIndex}_${methodIndex}`,
-                  newValue: `{${Object.keys(
-                    method.requestBody.content["application/json"].schema
-                      .properties
-                  ).map((key) => {
-                    const type =
-                      method.requestBody.content["application/json"].schema
-                        .properties[key].type;
-                    return `"${key}": "${
-                      type === "integer" ? "number" : type
-                    }"`;
-                  })}}`,
-                })
-              );
-            }
-          });
-        });
-      });
-    };
-  };
-
   const screenWidth = useWindowSize();
 
-  return screenWidth > 1024 ? (
+  if (screenWidth <= 1024) return <MobileApp />;
+
+  return (
     <Main>
       <ContactModal
         isOpen={isContactModalOpen}
@@ -227,12 +134,10 @@ const App = () => {
         setSelectedFile={setSelectedFile}
         handleOpenContact={handleOpenContact}
         handleDownloadFiles={handleDownloadFiles}
-        handleImportFile={handleImportFile}
+        handleImportFile={(e) => handleImport(e, dispatch)}
         inputFileRef={inputFileRef}
       />
     </Main>
-  ) : (
-    <MobileApp />
   );
 };
 

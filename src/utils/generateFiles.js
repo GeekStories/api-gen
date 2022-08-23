@@ -1,4 +1,5 @@
 import Coder from "@littlethings/coder";
+import { notInitialized } from "react-redux/es/utils/useSyncExternalStore";
 
 const GenerateFilesContents = (dependencies, routes) => {
   const dir = {
@@ -13,12 +14,16 @@ const GenerateFilesContents = (dependencies, routes) => {
       ext: "js",
       contents: "",
     })),
-    middleware: routes.map((route, index) => ({
-      id: `middleware_file_${index}`,
-      name: route.name,
-      ext: "js",
-      contents: "",
-    })),
+    middleware: routes
+      .filter((r) => Object.keys(r.methods).length > 0)
+      .map((route, index) => {
+        return {
+          id: `middleware_file_${index}`,
+          name: route.name,
+          ext: "js",
+          contents: "",
+        };
+      }),
   };
 
   // Package.json
@@ -206,7 +211,7 @@ const GenerateMiddlewareFile = (middleware) => {
       const keyName =
         key === "minLength" ||
         key === "maxLength" ||
-        key === "minumum" ||
+        key === "minimum" ||
         key === "maximum"
           ? key.slice(0, 3)
           : key;

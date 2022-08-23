@@ -2,6 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 import RandomString from "../../utils/randomString";
 
 const METHOD_TYPES = ["get", "post", "delete", "put", "patch"];
+const IDS = [0];
+
+const GenerateID = () => {
+  let id = 0;
+
+  while (IDS.includes(id)) {
+    id = (Math.random() * (Math.random() * 100000)).toFixed();
+  }
+  IDS.push(id);
+
+  return id;
+};
+
+export const GetLatestID = () => {
+  return IDS[IDS.length - 1];
+};
 
 export const routesSlice = createSlice({
   name: "routes",
@@ -14,7 +30,7 @@ export const routesSlice = createSlice({
         name = action.payload.name;
       }
 
-      const routes = JSON.parse(JSON.stringify(state));
+      let routes = JSON.parse(JSON.stringify(state));
       if (routes.find((route) => route.name === name)) {
         console.log("route already exists");
         name = `newroute${RandomString(3)}`;
@@ -23,7 +39,7 @@ export const routesSlice = createSlice({
       return [
         ...routes,
         {
-          id: (Math.random() * (Math.random() * 100000)).toFixed(),
+          id: GenerateID(),
           name: name.replace(/[^a-z]/, ""),
           methods: [],
         },
@@ -54,10 +70,7 @@ export const routesSlice = createSlice({
     },
     createMethod: (state, action) => {
       const { type, routeId } = action.payload;
-      const routes = JSON.parse(JSON.stringify(state));
-
       const route = state.find((route) => route.id === routeId);
-      const routeIndex = routes.findIndex((route) => route.id === routeId);
 
       let difference = [];
       if (!type && route.methods.length < 5) {
@@ -68,11 +81,12 @@ export const routesSlice = createSlice({
               .includes(t)
         );
       }
+
       route.methods = [
         ...route.methods,
         {
-          id: `met_${routeIndex}_${route.methods.length}`,
-          type: type ? type : difference[0],
+          id: GenerateID(),
+          type: type || difference[0],
           params: [],
           queries: [],
           body: null,
@@ -84,11 +98,11 @@ export const routesSlice = createSlice({
       const route = state.find((route) => route.id === routeId);
       const method = route.methods.find((method) => method.id === methodId);
 
-      const currentMethods = METHOD_TYPES.filter((TYPE) =>
-        route.methods
-          .reduce((previous, current) => previous + current.type, [])
-          .includes(TYPE)
+      const currentMethods = METHOD_TYPES.filter((t) =>
+        route.methods.reduce((prev, curr) => prev + curr.type, []).includes(t)
       );
+
+      console.log(currentMethods);
 
       if (currentMethods.includes(newValue)) return state;
 
@@ -103,10 +117,7 @@ export const routesSlice = createSlice({
     },
     createParam: (state, action) => {
       const { routeId, methodId, newParam } = action.payload;
-      const routes = JSON.parse(JSON.stringify(state));
-
       const route = state.find((route) => route.id === routeId);
-      const routeIndex = routes.findIndex((route) => route.id === routeId);
       const methodIndex = route.methods.findIndex(
         (method) => method.id === methodId
       );
@@ -115,7 +126,7 @@ export const routesSlice = createSlice({
         ...route.methods[methodIndex].params,
         {
           ...newParam,
-          id: `param_${routeIndex}_${methodIndex}_${route.methods[methodIndex].params.length}`,
+          id: GenerateID(),
         },
       ];
     },
@@ -130,10 +141,7 @@ export const routesSlice = createSlice({
     },
     createQuery: (state, action) => {
       const { routeId, methodId, newQuery } = action.payload;
-      const routes = JSON.parse(JSON.stringify(state));
-
       const route = state.find((route) => route.id === routeId);
-      const routeIndex = routes.findIndex((route) => route.id === routeId);
       const methodIndex = route.methods.findIndex(
         (method) => method.id === methodId
       );
@@ -142,7 +150,7 @@ export const routesSlice = createSlice({
         ...route.methods[methodIndex].queries,
         {
           ...newQuery,
-          id: `query_${routeIndex}_${methodIndex}_${route.methods[methodIndex].queries.length}`,
+          id: GenerateID(),
         },
       ];
     },
