@@ -18,6 +18,7 @@ $ git clone git@github.com:GeekStories/api-gen.git
 Go into the project directory and run the command:
 
 ```
+$ npm i
 $ npm start
 ```
 
