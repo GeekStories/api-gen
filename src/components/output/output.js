@@ -11,9 +11,8 @@ const Output = ({
   selectedFile,
   setSelectedFile,
   handleOpenContact,
+  handleOpenHelp,
   handleDownloadFiles,
-  handleImportFile,
-  inputFileRef
 }) => {
   return (
     <StyledMain>
@@ -22,10 +21,9 @@ const Output = ({
         setSelectedFile={setSelectedFile}
         selectedFile={selectedFile}
         handleOpenContact={handleOpenContact}
+        handleOpenHelp={handleOpenHelp}
         handleGenerateFiles={handleGenerateFiles}
         handleDownloadFiles={handleDownloadFiles}
-        handleImportFile={handleImportFile}
-        inputFileRef={inputFileRef}
       />
       <SelectedFileView selectedFile={selectedFile} />
     </StyledMain>

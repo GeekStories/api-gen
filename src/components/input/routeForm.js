@@ -8,6 +8,7 @@ import {
   createQuery,
   removeQuery,
   updateRouteName,
+  removeMethod,
   updateMethodBody,
 } from "../../store/api/routes";
 
@@ -105,11 +106,21 @@ const RouteForm = ({
     );
   };
 
+  const handleRemoveRoute = (routeId, methodId) => {
+    dispatch(removeMethod({ routeId, methodId }));
+
+    console.log(routes.length)
+
+    if (routes.length === 0) setRouteName("");
+    else handleSelectRoute(routes[0].id);
+  };
+
   useEffect(() => {
-    if (selectedRoute) {
+    if (selectedRoute.methods) {
+      if (selectedRoute.methods.length === 0) setRouteName("");
       const { name } = selectedRoute;
       setRouteName(name ?? "");
-    }
+    } else setRouteName("");
   }, [selectedRoute]);
 
   return (
@@ -117,8 +128,8 @@ const RouteForm = ({
       <RoutesList
         handleSelectRoute={handleSelectRoute}
         handleSelectMethod={handleSelectMethod}
-        routeName={routeName}
         selectedRoutename={selectedRoute.name ?? ""}
+        handleRemoveRoute={handleRemoveRoute}
       />
 
       <StyledMain>

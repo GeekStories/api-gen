@@ -23,18 +23,11 @@ export const routesSlice = createSlice({
   name: "routes",
   initialState: [],
   reducers: {
-    createRoute: (state, action = {}) => {
+    createRoute: (state = {}) => {
       let name = `newroute${RandomString(3)}`;
 
-      if (action?.payload?.name !== "") {
-        name = action.payload.name;
-      }
-
       let routes = JSON.parse(JSON.stringify(state));
-      if (routes.find((route) => route.name === name)) {
-        console.log("route already exists");
-        name = `newroute${RandomString(3)}`;
-      }
+      name = `newroute${RandomString(3)}`;
 
       return [
         ...routes,
@@ -71,6 +64,7 @@ export const routesSlice = createSlice({
     createMethod: (state, action) => {
       const { type, routeId } = action.payload;
       const route = state.find((route) => route.id === routeId);
+      if (route.methods.length === 5) return;
 
       let difference = [];
       if (!type && route.methods.length < 5) {

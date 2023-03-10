@@ -2,6 +2,7 @@ import tw from "tailwind-styled-components";
 
 import File from "./file";
 import { FcFolder } from "react-icons/fc";
+import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { TiSocialTwitter, TiSocialGithub } from "react-icons/ti";
 import { GrContactInfo } from "react-icons/gr";
 import { CgWebsite } from "react-icons/cg";
@@ -12,11 +13,10 @@ const FolderLabel = tw.label`flex items-center`;
 const Folder = tw.div`flex flex-col`;
 const Files = tw.div`pl-10`;
 const ControlsSocialsWrapper = tw.div`row-span-2`;
-const DirectoryControls = tw.div`row-span-2 m-auto grid grid-cols-3 gap-1 w-full px-2`;
+const DirectoryControls = tw.div`row-span-2 m-auto grid grid-cols-2 gap-1 w-full px-2`;
 const Button = tw.button`border-2 border-gray-400 px-3 text-sm font-medium transition-all ease-in-out delay-150 hover:bg-gray-300 hover:border-gray-400 rounded`;
-const HiddenInput = tw.input`hidden`;
 
-const SocialPlugs = tw.div`row-span-1 grid grid-cols-4 p-1`;
+const SocialPlugs = tw.div`row-span-1 flex flex-row p-1`;
 const SocialLink = tw.a`m-auto`;
 
 const OutputFileView = ({
@@ -24,10 +24,9 @@ const OutputFileView = ({
   setSelectedFile,
   selectedFile,
   handleOpenContact,
+  handleOpenHelp,
   handleGenerateFiles,
   handleDownloadFiles,
-  handleImportFile,
-  inputFileRef,
 }) => {
   return (
     <Main>
@@ -86,16 +85,6 @@ const OutputFileView = ({
         <DirectoryControls>
           <Button onClick={handleGenerateFiles}>Generate File Contents</Button>
           <Button onClick={handleDownloadFiles}>Download Project!</Button>
-          <Button onClick={() => inputFileRef.current.click()}>
-            Import Apispec!
-          </Button>
-          <HiddenInput
-            type="file"
-            ref={inputFileRef}
-            onChange={handleImportFile}
-            id="file"
-            accept=".yaml"
-          />
         </DirectoryControls>
         <SocialPlugs>
           <SocialLink
@@ -123,6 +112,10 @@ const OutputFileView = ({
           </SocialLink>
           <SocialLink href="#" onClick={handleOpenContact}>
             <GrContactInfo size="2em" />
+          </SocialLink>
+
+          <SocialLink href="#" onClick={handleOpenHelp}>
+            <AiOutlineQuestionCircle size="2em" />
           </SocialLink>
         </SocialPlugs>
       </ControlsSocialsWrapper>

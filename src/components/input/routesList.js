@@ -12,8 +12,8 @@ const NewRouteButton = tw.button`h-10 w-full border-2 border-gray-200 my-1 round
 const RoutesList = ({
   handleSelectRoute,
   handleSelectMethod,
-  routeName,
   selectedRouteName,
+  handleRemoveRoute
 }) => {
   const routes = useSelector((state) => state.routes);
   const dispatch = useDispatch();
@@ -31,13 +31,14 @@ const RoutesList = ({
                 handleSelectRoute={handleSelectRoute}
                 handleSelectMethod={handleSelectMethod}
                 $selected={route.name === selectedRouteName}
+                handleRemoveRoute={handleRemoveRoute}
               />
             );
           })}
       </List>
 
       <NewRouteButton
-        onClick={() => dispatch(createRoute({ name: routeName }))}
+        onClick={() => dispatch(createRoute())}
       >
         New Route
       </NewRouteButton>

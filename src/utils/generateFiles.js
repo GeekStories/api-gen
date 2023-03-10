@@ -1,5 +1,4 @@
 import Coder from "@littlethings/coder";
-import { notInitialized } from "react-redux/es/utils/useSyncExternalStore";
 
 const GenerateFilesContents = (dependencies, routes) => {
   const dir = {
@@ -108,7 +107,7 @@ const GeneratePackageContents = (dependencies) => {
   coder.line('"author": "",');
   coder.line('"main": "server.js",');
   coder.line('"scripts": { ');
-  coder.line('"devStart": "nodemon server.js"');
+  coder.line('"devStart": "node server.js --watch"');
   coder.line("},");
   coder.line('"dependencies": {');
   coder.line(
@@ -224,7 +223,7 @@ const GenerateMiddlewareFile = (middleware) => {
       const { name, type, options } = param;
 
       const left = `${name.toLowerCase()}: Joi.${
-        type === "integer" ? "number" : type
+        type === "integer" ? "number" : type === "email" ? "string" : type
       }()`;
       const right = options.map((option) => {
         const { keyName, keyValue } = GetKeyValue(option);
@@ -239,11 +238,25 @@ const GenerateMiddlewareFile = (middleware) => {
   const GenerateBody = (body) => {
     const keys = [...Object.keys(body)];
     coder.line(`[Segments.BODY]: Joi.object().keys({`);
-    keys.forEach((key) =>
+    keys.forEach((key) => {
+      let v = "";
+      console.log(key, body[[key]]);
+      switch (body[[key]]) {
+        case "integer":
+          v = "number()";
+          break;
+        case "email":
+          v = "string().email()";
+          break;
+        default:
+          v = `${body[[key]]}()`;
+          break;
+      }
+
       coder.line(
-        `${key}: Joi.${body[[key]] === "integer" ? "number" : body[[key]]}(),`
-      )
-    );
+        `${key}: Joi.${v},`
+      );
+    });
     coder.line("}),");
   };
 

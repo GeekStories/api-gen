@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [
-  { name: "express", version: "4.17.3", id: "dep_0" },
+  { name: "express", version: "4.18.2", id: "dep_0" },
   { name: "cors", version: "2.8.5", id: "dep_1" },
-  { name: "nodemon", version: "2.0.15", id: "dep_2" },
   { name: "celebrate", version: "15.0.1", id: "dep_3" },
 ];
 

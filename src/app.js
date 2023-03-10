@@ -1,9 +1,7 @@
 import tw from "tailwind-styled-components";
 
-import { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import handleImport from "./utils/handleImport";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
@@ -14,21 +12,20 @@ import RouteForm from "./components/input/routeForm";
 import Output from "./components/output/output";
 import GenerateFilesContents from "./utils/generateFiles";
 import ContactModal from "./components/modals/contactModal";
+import HelpModal from "./components/modals/helpModal";
 
 const Main = tw.div`h-screen flex flex-col`;
 const UserInputArea = tw.div`grid grid-cols-12`;
 
 const App = () => {
-  const dispatch = useDispatch();
-
   const dependencies = useSelector((state) => state.dependencies);
   const routes = useSelector((state) => state.routes);
-  const inputFileRef = useRef(null);
 
   const [selectedRoute, setSelectedRoute] = useState({});
   const [selectedMethod, setSelectedMethod] = useState({});
 
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [helpModalState, setHelpModalState] = useState(false);
   const [selectedFile, setSelectedFile] = useState({});
   const [projectFiles, setFiles] = useState({
     defaults: [
@@ -44,7 +41,7 @@ const App = () => {
         name: "package",
         ext: "json",
         contents:
-          ' {\n\t\t"name": "express-api",\n\t\t"version": "1.0.0",\n\t\t"private": "true",\n\t\t"description": "",\n\t\t"author": "",\n\t\t"main": "server.js",\n\t\t"scripts": { \n\t\t"devStart": "nodemon server.js"\n\t\t},\n\t\t"dependencies": {\n\t\t"express": "4.17.3","cors": "2.8.5","nodemon": "2.0.15","celebrate": "15.0.1"\n\t\t},\n\t\t"license": "",\n\t\t"devDependencies": {}\n}\n',
+          ' {\n\t\t"name": "express-api",\n\t\t"version": "1.0.0",\n\t\t"private": "true",\n\t\t"description": "",\n\t\t"author": "",\n\t\t"main": "server.js",\n\t\t"scripts": { \n\t\t"devStart": "node server.js --watch"\n\t\t},\n\t\t"dependencies": {\n\t\t"express": "4.18.2","cors": "2.8.5","celebrate": "15.0.1"\n\t\t},\n\t\t"license": "",\n\t\t"devDependencies": {}\n}\n',
       },
       {
         id: "root_file_2",
@@ -83,6 +80,10 @@ const App = () => {
     setSelectedFile({}); // Reset selectedFile
   };
 
+  const handleOpenHelp = () => {
+    setHelpModalState(!helpModalState);
+  };
+
   const handleDownloadFiles = async () => {
     const zip = new JSZip();
 
@@ -108,7 +109,6 @@ const App = () => {
   };
 
   const screenWidth = useWindowSize();
-
   if (screenWidth <= 1024) return <MobileApp />;
 
   return (
@@ -117,6 +117,7 @@ const App = () => {
         isOpen={isContactModalOpen}
         handleOpenContact={handleOpenContact}
       />
+      <HelpModal isOpen={helpModalState} handleOpenHelp={handleOpenHelp} />
       <UserInputArea>
         <Dependencies dependencies={dependencies} />
         <RouteForm
@@ -133,9 +134,8 @@ const App = () => {
         selectedFile={selectedFile}
         setSelectedFile={setSelectedFile}
         handleOpenContact={handleOpenContact}
+        handleOpenHelp={handleOpenHelp}
         handleDownloadFiles={handleDownloadFiles}
-        handleImportFile={(e) => handleImport(e, dispatch)}
-        inputFileRef={inputFileRef}
       />
     </Main>
   );
