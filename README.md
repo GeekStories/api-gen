@@ -5,8 +5,8 @@
 Generate a boilerplate Express API Server
 
 ## Project Status
-1 May 2022 v1.0.0 - First Release
-10/03/2023 v1.0.1 - Small update
+- 1 May 2022 v1.0.0 - First Release
+- 10/03/2023 v1.0.1 - Small update
 
 ## Usage
 
